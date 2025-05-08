@@ -1,8 +1,5 @@
 import bagel.*;
 import bagel.util.Rectangle;
-import bagel.util.Colour;
-
-import java.awt.event.InputEvent;
 
 /**
  * Represents the player-controlled character, Mario.
@@ -95,12 +92,15 @@ public class Mario {
      * @param input     The player's input (keyboard/mouse).
      * @param ladders   The array of ladders in the game that Mario can climb.
      * @param platforms The array of platforms in the game that Mario can walk on.
-     * @param hammer    The hammer object that Mario can collect and use.
+     * @param hammers    The array of hammer objects that Mario can collect and use.
      */
-    public void update(Input input, Ladder[] ladders, Platform[] platforms, Hammer hammer) {
+    public void update(Input input, Ladder[] ladders, Platform[] platforms, Hammer[] hammers) {
         handleHorizontalMovement(input); // 1) Horizontal movement
-        updateSprite(hammer); // 2) Update Mario’s current sprite (hammer or not, facing left or right)
-        handleHammerCollection(hammer); // 3) If you just picked up the hammer:
+        for (Hammer hammer: hammers){
+            updateSprite(hammer); // 2) Update Mario’s current sprite (hammer or not, facing left or right)
+            handleHammerCollection(hammer); // 3) If you just picked up the hammer:
+        }
+
         updateSprite(); // 4) Now replace sprite (since either isFacingRight or hasHammer could have changed)
 
         // 5) Ladder logic – check if on a ladder
@@ -121,7 +121,7 @@ public class Mario {
 
         // 9) Check for platform collision AFTER Mario moves
         boolean onPlatform;
-        onPlatform = handlePlatforms(platforms, hammer);
+        onPlatform = handlePlatforms(platforms);
 
         // 10) If we are on the platform, allow jumping; Prevent Mario from falling below the ground
         handleJumping(onPlatform, wantsToJump);
@@ -139,10 +139,10 @@ public class Mario {
      * preventing his jump from being interrupted in mid-air.
      *
      * @param platforms An array of {@link Platform} objects representing the platforms in the game.
-     * @param hammer    A {@link Hammer} object (not used in this method, but might be for future logic).
+
      * @return {@code true} if Mario is standing on a platform, {@code false} otherwise.
      */
-    private boolean handlePlatforms(Platform[] platforms, Hammer hammer) {
+    private boolean handlePlatforms(Platform[] platforms) {
         boolean onPlatform = false;
 
         // We'll only snap Mario to a platform if he's moving downward (velocityY >= 0)
@@ -256,6 +256,7 @@ public class Mario {
 
     /** Handles collecting the hammer if Mario is in contact with it. */
     private void handleHammerCollection(Hammer hammer) {
+
         if (!hammer.isCollected() && isTouchingHammer(hammer)) {
             setHasHammer(true);
             hammer.collect();

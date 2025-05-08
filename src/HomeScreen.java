@@ -66,9 +66,10 @@ public class HomeScreen {
         PROMPT_FONT.drawString(PROMPT, promptX, PROMPT_Y);
 
         // 4) If ENTER is pressed, transition from the home screen to the game
-        if (input.wasPressed(Keys.ENTER)) {
+        if (input.wasPressed(Keys.ENTER) || input.wasPressed(Keys.NUM_1)) {
             return true;
         }
+
 
         // 5) Otherwise, remain on the home screen
         return false;

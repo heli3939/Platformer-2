@@ -120,7 +120,7 @@ public class ShadowDonkeyKong extends AbstractGame {
      */
     public static void main(String[] args) {
         Properties gameProps = IOUtils.readPropertiesFile("res/app.properties");
-        Properties messageProps = IOUtils.readPropertiesFile("res/message_en.properties");
+        Properties messageProps = IOUtils.readPropertiesFile("res/message.properties");
         ShadowDonkeyKong game = new ShadowDonkeyKong(gameProps, messageProps);
         game.run();
     }

@@ -13,7 +13,7 @@ public class GamePlayScreen {
     private Mario mario;
     private Barrel[] barrels;   // Array of barrels in the game
     private Ladder[] ladders;   // Array of ladders in the game
-    private Hammer hammer;      // The hammer object that Mario can collect
+    private Hammer[] hammers;      // The hammer object that Mario can collect
     private Donkey donkey;      // Donkey Kong, the objective of the game
     private Image background;   // Background image for the game
     private Platform[] platforms; // Array of platforms in the game
@@ -36,6 +36,8 @@ public class GamePlayScreen {
     private static final int BARREL_CROSS_SCORE = 30;
     private int score = 0;  // Player's score for jumping over barrels
     private boolean isGameOver = false; // Game over flag
+
+    private static int currLevel = 1;
 
     /**
      * Returns the player's current score.
@@ -82,21 +84,23 @@ public class GamePlayScreen {
      */
     private void initializeGameObjects() {
         // 1) Create Mario
-        double marioX = Double.parseDouble(GAME_PROPS.getProperty("mario.start.x"));
-        double marioY = Double.parseDouble(GAME_PROPS.getProperty("mario.start.y"));
+        String[] marioCoord = GAME_PROPS.getProperty("mario.level" + currLevel).split(",");
+        double marioX = Double.parseDouble(marioCoord[0]);
+        double marioY = Double.parseDouble(marioCoord[1]);
         this.mario = new Mario(marioX, marioY);
 
         // 2) Create Donkey Kong
-        double donkeyX = Double.parseDouble(GAME_PROPS.getProperty("donkey.x"));
-        double donkeyY = Double.parseDouble(GAME_PROPS.getProperty("donkey.y"));
+        String[] DonkeyCoord = GAME_PROPS.getProperty("donkey.level" + currLevel).split(",");
+        double donkeyX = Double.parseDouble(DonkeyCoord[0]);
+        double donkeyY = Double.parseDouble(DonkeyCoord[1]);
         this.donkey = new Donkey(donkeyX, donkeyY);
 
         // 3) Create the Barrels array
-        int barrelCount = Integer.parseInt(GAME_PROPS.getProperty("barrel.count"));
+        int barrelCount = Integer.parseInt(GAME_PROPS.getProperty("barrel.level" + currLevel + ".count"));
         this.barrels = new Barrel[barrelCount];
         int barrelIndex = 0;
         for (int i = 1; i <= barrelCount; i++) {
-            String barrelData = GAME_PROPS.getProperty("barrel." + i);
+            String barrelData = GAME_PROPS.getProperty("barrel.level" + currLevel + "." + i);
             if (barrelData != null) {
                 String[] coords = barrelData.split(",");
                 if (coords.length < 2) {
@@ -113,11 +117,11 @@ public class GamePlayScreen {
         }
 
         // 4) Create the Ladders array
-        int ladderCount = Integer.parseInt(GAME_PROPS.getProperty("ladder.count"));
+        int ladderCount = Integer.parseInt(GAME_PROPS.getProperty("ladder.level" + currLevel + ".count"));
         this.ladders = new Ladder[ladderCount];
         int ladderIndex = 0;
         for (int i = 1; i <= ladderCount; i++) {
-            String ladderData = GAME_PROPS.getProperty("ladder." + i);
+            String ladderData = GAME_PROPS.getProperty("ladder.level" + currLevel + "." + i);
             if (ladderData != null) {
                 String[] coords = ladderData.split(",");
                 if (coords.length < 2) {
@@ -134,7 +138,7 @@ public class GamePlayScreen {
         }
 
         // 5) Create the Platforms array
-        String platformData = GAME_PROPS.getProperty("platforms");
+        String platformData = GAME_PROPS.getProperty("platforms.level" + currLevel);
         if (platformData != null && !platformData.isEmpty()) {
             String[] platformEntries = platformData.split(";");
             this.platforms = new Platform[platformEntries.length];
@@ -157,9 +161,26 @@ public class GamePlayScreen {
         }
 
         // 6) Create Hammer
-        double hammerX = Double.parseDouble(GAME_PROPS.getProperty("hammer.x"));
-        double hammerY = Double.parseDouble(GAME_PROPS.getProperty("hammer.y"));
-        this.hammer = new Hammer(hammerX, hammerY);
+        int hammerCount = Integer.parseInt(GAME_PROPS.getProperty("hammer.level" + currLevel + ".count"));
+        this.hammers = new Hammer[hammerCount];
+        int hammerIndex = 0;
+        for (int i = 1; i <= hammerCount; i++) {
+            String hammerData = GAME_PROPS.getProperty("hammer.level" + currLevel + "." + i);
+            if (hammerData != null) {
+                String[] coords = hammerData.split(",");
+                if (coords.length < 2) {
+                    System.out.println("Warning: Incomplete data for hammer." + i);
+                    continue; // Skip invalid entries
+                }
+                double hammerX = Double.parseDouble(coords[0]);
+                double hammerY = Double.parseDouble(coords[1]);
+                if (hammerIndex < hammerCount) {
+                    hammers[hammerIndex] = new Hammer(hammerX, hammerY);
+                    hammerIndex++;
+                }
+            }
+        }
+
     }
 
     /**
@@ -212,11 +233,13 @@ public class GamePlayScreen {
         donkey.update(platforms);
 
         // 5) Draw hammer and donkey
-        hammer.draw();
+        for (Hammer hammer: hammers){
+            hammer.draw();
+        }
         donkey.draw();
 
         // 6) Update Mario
-        mario.update(input, ladders, platforms, hammer);
+        mario.update(input, ladders, platforms, hammers);
 
         // 7) Check if Mario reaches Donkey
         if (mario.hasReached(donkey) && !mario.holdHammer()) {
