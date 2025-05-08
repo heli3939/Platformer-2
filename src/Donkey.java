@@ -6,22 +6,18 @@ import bagel.util.Rectangle;
  * Represents Donkey Kong in the game, affected by gravity and platform collisions.
  * The Donkey object moves downward due to gravity and lands on platforms when applicable.
  */
-public class Donkey {
-    private final Image DONKEY_IMAGE;
-    private final double X; // constant because x does not change, only relying on falling
-    private double y;
+public class Donkey extends GameEntity {
+    private final static String DONKEY_IMAGE = "res/donkey_kong.png";
     private double velocityY = 0;
 
     /**
      * Constructs a new Donkey at the specified starting position.
      *
-     * @param startX The initial x-coordinate of Donkey.
-     * @param startY The initial y-coordinate of Donkey.
+     * @param x The initial x-coordinate of Donkey.
+     * @param y The initial y-coordinate of Donkey.
      */
-    public Donkey(double startX, double startY) {
-        this.DONKEY_IMAGE = new Image("res/donkey_kong.png"); // Load Donkey Kong sprite
-        this.X = startX;
-        this.y = startY;
+    public Donkey(double x, double y) {
+        super(DONKEY_IMAGE, x, y);
     }
 
     /**
@@ -42,7 +38,7 @@ public class Donkey {
         for (Platform platform : platforms) {
             if (isTouchingPlatform(platform)) {
                 // Position Donkey on top of the platform
-                y = platform.getY() - (platform.getHeight() / 2) - (DONKEY_IMAGE.getHeight() / 2);
+                y = platform.getY() - (platform.getHeight() / 2) - (height / 2);
                 velocityY = 0; // Stop downward movement
                 break;
             }
@@ -63,26 +59,5 @@ public class Donkey {
         return donkeyBounds.intersects(platform.getBoundingBox());
     }
 
-    /**
-     * Draws Donkey on the screen.
-     */
-    public void draw() {
-        DONKEY_IMAGE.draw(X, y);
-//        drawBoundingBox(); // Uncomment for debugging
-    }
-
-    /**
-     * Returns Donkey's bounding box for collision detection.
-     *
-     * @return A {@link Rectangle} representing Donkey's bounding box.
-     */
-    public Rectangle getBoundingBox() {
-        return new Rectangle(
-                X - (DONKEY_IMAGE.getWidth() / 2),
-                y - (DONKEY_IMAGE.getHeight() / 2),
-                DONKEY_IMAGE.getWidth(),
-                DONKEY_IMAGE.getHeight()
-        );
-    }
 
 }

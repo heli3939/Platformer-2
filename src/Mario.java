@@ -5,18 +5,26 @@ import bagel.util.Rectangle;
  * Represents the player-controlled character, Mario.
  * Mario can move, jump, climb ladders, pick up a hammer, and interact with platforms.
  */
-public class Mario {
-    private double x, y; // Mario's position
+public class Mario extends GameEntity {
     private double velocityY = 0; // Vertical velocity
     private boolean isJumping = false; // Whether Mario is currently jumping
     private boolean hasHammer = false; // Whether Mario has collected a hammer
 
+    // store image path for mario face left and right
+    private final static String MARIOL_IMG = "res/mario_left.png";
+    private final static String MARIOR_IMG = "res/mario_right.png";
+
+    // store image path for mario face left and right with a hammer
+    private final static String MARIOLH_IMG = "res/mario_hammer_left.png";
+    private final static String MARIORH_IMG = "res/mario_hammer_right.png";
+
+
     // Mario images for different states
     private Image marioImage;
-    private final Image MARIO_RIGHT_IMAGE;
-    private final Image MARIO_LEFT_IMAGE;
-    private final Image MARIO_HAMMER_LEFT_IMAGE;
-    private final Image MARIO_HAMMER_RIGHT_IMAGE;
+    private final Image MARIO_RIGHT_IMAGE = new Image(MARIOR_IMG);
+    private final Image MARIO_LEFT_IMAGE = new Image(MARIOL_IMG);
+    private final Image MARIO_HAMMER_LEFT_IMAGE = new Image(MARIOLH_IMG);
+    private final Image MARIO_HAMMER_RIGHT_IMAGE = new Image(MARIORH_IMG);
 
 
     // Movement physics constants
@@ -24,33 +32,16 @@ public class Mario {
     private static final double MOVE_SPEED = 3.5;
     private static final double CLIMB_SPEED = 2;
 
-    private static double height;
-    private static double width;
     private boolean isFacingRight = true; // Mario's facing direction
-
-
 
     /**
      * Constructs a Mario character at the specified starting position.
      *
-     * @param startX Initial x-coordinate.
-     * @param startY Initial y-coordinate.
+     * @param x Initial x-coordinate.
+     * @param y Initial y-coordinate.
      */
-    public Mario(double startX, double startY) {
-        this.x = startX;
-        this.y = startY;
-
-        // Load images for left and right-facing Mario
-        this.MARIO_RIGHT_IMAGE = new Image("res/mario_right.png");
-        this.MARIO_LEFT_IMAGE = new Image("res/mario_left.png");
-        this.MARIO_HAMMER_RIGHT_IMAGE = new Image("res/mario_hammer_right.png");
-        this.MARIO_HAMMER_LEFT_IMAGE = new Image("res/mario_hammer_left.png");
-
-        // Default Mario starts facing right
-        this.marioImage = MARIO_HAMMER_RIGHT_IMAGE;
-
-        width = marioImage.getWidth();
-        height = marioImage.getHeight();
+    public Mario(double x, double y) {
+        super(MARIOR_IMG, x, y);
     }
 
     /**
@@ -71,19 +62,7 @@ public class Mario {
         return this.hasHammer;
     }
 
-    /**
-     * Gets Mario's bounding box for collision detection.
-     *
-     * @return A {@link Rectangle} representing Mario's collision area.
-     */
-    public Rectangle getBoundingBox() {
-        return new Rectangle(
-                x - (width / 2),
-                y - (height / 2),
-                width,
-                height
-        );
-    }
+
 
     /**
      * Updates Mario's movement, jumping, ladder climbing, hammer collection, and interactions.
@@ -131,6 +110,11 @@ public class Mario {
 
         // 12) Draw Mario
         draw();
+    }
+
+    @Override
+    public void draw(){
+        marioImage.draw(x, y);
     }
 
     /**
@@ -344,16 +328,6 @@ public class Mario {
         height = newHeight;
     }
 
-
-    /**
-     * Draws Mario on the screen.
-     */
-    public void draw() {
-        marioImage.draw(x, y);
-//    drawBoundingBox(); // Uncomment for debugging
-    }
-
-
     /**
      * Checks if Mario is touching a ladder.
      *
@@ -408,7 +382,7 @@ public class Mario {
         return isJumping
                 && Math.abs(this.x - barrel.getX()) <= 1
                 && (this.y < barrel.getY())
-                && ((this.y + height / 2) >= (barrel.getY() + barrel.getBarrelImage().getHeight() / 2
+                && ((this.y + height / 2) >= (barrel.getY() + barrel.height / 2
                 - (JUMP_STRENGTH * JUMP_STRENGTH) / (2 * Physics.MARIO_GRAVITY) - height / 2));
     }
 
