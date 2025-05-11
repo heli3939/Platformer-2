@@ -6,7 +6,7 @@ import bagel.util.Rectangle;
  * Represents a ladder in the game.
  * The ladder falls under gravity until it lands on a platform.
  */
-public class Ladder extends GameEntity{
+public class Ladder extends GameEntity implements PhysicsAffected{
     private final static String LADDER_IMAGE = "res/ladder.png";
     private double velocityY = 0; // Current vertical velocity due to gravity
 
@@ -27,12 +27,29 @@ public class Ladder extends GameEntity{
      * @param platforms An array of platforms in the game.
      */
     public void update(Platform[] platforms) {
+        applyGravity(platforms);
+        // 5) Draw the ladder after updating position
+        draw();
+    }
+
+    @Override
+    public double getGravity() {
+        return LADDER_GRAVITY;
+    }
+
+    @Override
+    public double getTerminalVelocity() {
+        return LADDER_TERMINAL_VELOCITY;
+    }
+
+    @Override
+    public void applyGravity(Platform[] platforms) {
         // 1) Apply gravity
-        velocityY += Physics.LADDER_GRAVITY;
+        velocityY += LADDER_GRAVITY;
 
         // 2) Limit falling speed to terminal velocity
-        if (velocityY > Physics.LADDER_TERMINAL_VELOCITY) {
-            velocityY = Physics.LADDER_TERMINAL_VELOCITY;
+        if (velocityY > LADDER_TERMINAL_VELOCITY) {
+            velocityY = LADDER_TERMINAL_VELOCITY;
         }
 
         // 3) Move the ladder downward
@@ -50,9 +67,5 @@ public class Ladder extends GameEntity{
                 break; // Stop checking further once the ladder lands
             }
         }
-
-        // 5) Draw the ladder after updating position
-        draw();
     }
-
 }

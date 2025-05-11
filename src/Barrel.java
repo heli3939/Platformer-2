@@ -6,7 +6,7 @@ import bagel.util.Rectangle;
  * Represents a barrel in the game, affected by gravity and platform collisions.
  * The barrel can be destroyed, at which point it will no longer be drawn or interact with the environment.
  */
-public class Barrel extends GameEntity{
+public class Barrel extends GameEntity implements PhysicsAffected{
     private final static String BARREL_IMAGE = "res/barrel.png";
     private double velocityY = 0;
     private boolean isDestroyed = false;
@@ -30,9 +30,9 @@ public class Barrel extends GameEntity{
     public void update(Platform[] platforms) {
         if (!isDestroyed) {
             // 1) Apply gravity
-            velocityY += Physics.BARREL_GRAVITY;
-            if (velocityY > Physics.BARREL_TERMINAL_VELOCITY) {
-                velocityY = Physics.BARREL_TERMINAL_VELOCITY;
+            velocityY += BARREL_GRAVITY;
+            if (velocityY > BARREL_TERMINAL_VELOCITY) {
+                velocityY = BARREL_TERMINAL_VELOCITY;
             }
             y += velocityY;
 
@@ -67,6 +67,35 @@ public class Barrel extends GameEntity{
      */
     public boolean isDestroyed() {
         return isDestroyed;
+    }
+
+    @Override
+    public double getGravity(){
+        return BARREL_GRAVITY;
+    }
+
+    @Override
+    public double getTerminalVelocity() {
+        return BARREL_TERMINAL_VELOCITY;
+    }
+
+    @Override
+    public void applyGravity(Platform[] platforms) {
+        // Apply gravity
+        velocityY += DONKEY_GRAVITY;
+        y += velocityY;
+        if (velocityY > DONKEY_TERMINAL_VELOCITY) {
+            velocityY = DONKEY_TERMINAL_VELOCITY;
+        }
+        // Check for platform collisions
+        for (Platform platform : platforms) {
+            if (this.getBoundingBox().intersects(platform.getBoundingBox())) {
+                // Position Donkey on top of the platform
+                y = platform.getY() - (platform.getHeight() / 2) - (height / 2);
+                velocityY = 0; // Stop downward movement
+                break;
+            }
+        }
     }
 
 }

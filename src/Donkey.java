@@ -6,7 +6,7 @@ import bagel.util.Rectangle;
  * Represents Donkey Kong in the game, affected by gravity and platform collisions.
  * The Donkey object moves downward due to gravity and lands on platforms when applicable.
  */
-public class Donkey extends GameEntity {
+public class Donkey extends GameEntity implements PhysicsAffected{
     private final static String DONKEY_IMAGE = "res/donkey_kong.png";
     private double velocityY = 0;
 
@@ -28,22 +28,7 @@ public class Donkey extends GameEntity {
      */
     public void update(Platform[] platforms) {
         // Apply gravity
-        velocityY += Physics.DONKEY_GRAVITY;
-        y += velocityY;
-        if (velocityY > Physics.DONKEY_TERMINAL_VELOCITY) {
-            velocityY = Physics.DONKEY_TERMINAL_VELOCITY;
-        }
-
-        // Check for platform collisions
-        for (Platform platform : platforms) {
-            if (isTouchingPlatform(platform)) {
-                // Position Donkey on top of the platform
-                y = platform.getY() - (platform.getHeight() / 2) - (height / 2);
-                velocityY = 0; // Stop downward movement
-                break;
-            }
-        }
-
+        applyGravity(platforms);
         // Draw Donkey
         draw();
     }
@@ -59,5 +44,32 @@ public class Donkey extends GameEntity {
         return donkeyBounds.intersects(platform.getBoundingBox());
     }
 
+    @Override
+    public double getGravity(){
+        return MARIO_GRAVITY;
+    }
 
+    @Override
+    public double getTerminalVelocity() {
+        return MARIO_TERMINAL_VELOCITY;
+    }
+
+    @Override
+    public void applyGravity(Platform[] platforms) {
+        // Apply gravity
+        velocityY += DONKEY_GRAVITY;
+        y += velocityY;
+        if (velocityY > DONKEY_TERMINAL_VELOCITY) {
+            velocityY = DONKEY_TERMINAL_VELOCITY;
+        }
+        // Check for platform collisions
+        for (Platform platform : platforms) {
+            if (isTouchingPlatform(platform)) {
+                // Position Donkey on top of the platform
+                y = platform.getY() - (platform.getHeight() / 2) - (height / 2);
+                velocityY = 0; // Stop downward movement
+                break;
+            }
+        }
+    }
 }

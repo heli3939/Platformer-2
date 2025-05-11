@@ -5,7 +5,7 @@ import bagel.util.Rectangle;
  * Represents the player-controlled character, Mario.
  * Mario can move, jump, climb ladders, pick up a hammer, and interact with platforms.
  */
-public class Mario extends GameEntity {
+public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAffected {
     private double velocityY = 0; // Vertical velocity
     private boolean isJumping = false; // Whether Mario is currently jumping
     private boolean hasHammer = false; // Whether Mario has collected a hammer
@@ -63,7 +63,6 @@ public class Mario extends GameEntity {
     }
 
 
-
     /**
      * Updates Mario's movement, jumping, ladder climbing, hammer collection, and interactions.
      * This method is called every frame to process player input and update Mario's state.
@@ -91,8 +90,7 @@ public class Mario extends GameEntity {
 
         // 7) If not on ladder, apply gravity, move Mario
         if (!isOnLadder) {
-            velocityY += Physics.MARIO_GRAVITY;
-            velocityY = Math.min(Physics.MARIO_TERMINAL_VELOCITY, velocityY);
+            applyGravity(platforms);
         }
 
         // 8) Actually move Mario vertically after gravity
@@ -267,7 +265,7 @@ public class Mario extends GameEntity {
      * Enforces screen boundaries to prevent Mario from moving out of bounds.
      * Ensures Mario stays within the left, right, and bottom limits of the game window.
      */
-    private void enforceBoundaries() {
+    public void enforceBoundaries() {
         // Calculate half the width of the Mario image (used for centering and boundary checks)
         double halfW = marioImage.getWidth() / 2;
 
@@ -383,7 +381,22 @@ public class Mario extends GameEntity {
                 && Math.abs(this.x - barrel.getX()) <= 1
                 && (this.y < barrel.getY())
                 && ((this.y + height / 2) >= (barrel.getY() + barrel.height / 2
-                - (JUMP_STRENGTH * JUMP_STRENGTH) / (2 * Physics.MARIO_GRAVITY) - height / 2));
+                - (JUMP_STRENGTH * JUMP_STRENGTH) / (2 * MARIO_GRAVITY) - height / 2));
     }
 
+    @Override
+    public double getGravity() {
+        return MARIO_GRAVITY;
+    }
+
+    @Override
+    public double getTerminalVelocity() {
+        return MARIO_TERMINAL_VELOCITY;
+    }
+
+    @Override
+    public void applyGravity(Platform[] platforms) {
+        velocityY += MARIO_GRAVITY;
+        velocityY = Math.min(MARIO_TERMINAL_VELOCITY, velocityY);
+    }
 }
