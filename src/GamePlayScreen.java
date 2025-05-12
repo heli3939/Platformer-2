@@ -34,18 +34,18 @@ public class GamePlayScreen {
     private static final int BARREL_SCORE = 100;
     private static final int TIME_DISPLAY_DIFF_Y = 30;
     private static final int BARREL_CROSS_SCORE = 30;
-    private int score = 0;  // Player's score for jumping over barrels
+    private int startedScore;  // Player's startedScore for jumping over barrels
     private boolean isGameOver = false; // Game over flag
 
-    private static int currLevel = 1;
+    private int currLevel;
 
     /**
-     * Returns the player's current score.
+     * Returns the player's current startedScore.
      *
-     * @return The player's score.
+     * @return The player's startedScore.
      */
-    public int getScore() {
-        return score;
+    public int getStartedScore() {
+        return startedScore;
     }
 
     /**
@@ -62,7 +62,7 @@ public class GamePlayScreen {
      *
      * @param gameProps  Properties file containing game settings.
      */
-    public GamePlayScreen(Properties gameProps) {
+    public GamePlayScreen(Properties gameProps, int currLevel, int startedScore) {
         this.GAME_PROPS = gameProps;
 
         // Load game parameters
@@ -74,6 +74,8 @@ public class GamePlayScreen {
         this.SCORE_X = Integer.parseInt(gameProps.getProperty("gamePlay.score.x"));
         this.SCORE_Y = Integer.parseInt(gameProps.getProperty("gamePlay.score.y"));
         this.background = new Image("res/background.png");
+        this.currLevel = currLevel;
+        this.startedScore = startedScore;
 
         // Initialize game objects
         initializeGameObjects();
@@ -213,14 +215,14 @@ public class GamePlayScreen {
         for (Barrel barrel : barrels) {
             if (barrel == null) continue;
             if (mario.jumpOver(barrel)) {
-                score += BARREL_CROSS_SCORE;
+                startedScore += BARREL_CROSS_SCORE;
             }
             if (!barrel.isDestroyed() && mario.isTouchingBarrel(barrel)) {
                 if (!mario.holdHammer()) {
                     isGameOver = true;
                 } else {
                     barrel.destroy();
-                    score += BARREL_SCORE;
+                    startedScore += BARREL_SCORE;
                 }
             }
             barrel.update(platforms);
@@ -246,7 +248,7 @@ public class GamePlayScreen {
             isGameOver = true;
         }
 
-        // 8) Display score and time left
+        // 8) Display startedScore and time left
         displayInfo();
 
         // 9) Return game state
@@ -254,10 +256,10 @@ public class GamePlayScreen {
     }
 
     /**
-     * Displays the player's score & time left on the screen.
+     * Displays the player's startedScore & time left on the screen.
      */
     public void displayInfo() {
-        STATUS_FONT.drawString(SCORE_MESSAGE + score, SCORE_X, SCORE_Y);
+        STATUS_FONT.drawString(SCORE_MESSAGE + startedScore, SCORE_X, SCORE_Y);
 
         // Time left in seconds
         int secondsLeft = (MAX_FRAMES - currFrame) / 60;

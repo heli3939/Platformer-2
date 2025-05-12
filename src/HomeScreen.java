@@ -53,7 +53,7 @@ public class HomeScreen {
      * @param input The current mouse/keyboard input.
      * @return {@code true} if ENTER key is pressed (to start the game), {@code false} otherwise.
      */
-    public boolean update(Input input) {
+    public int update(Input input) {
         // 1) Draw the background image at the top-left corner
         BACKGROUND_IMAGE.drawFromTopLeft(0, 0);
 
@@ -67,11 +67,14 @@ public class HomeScreen {
 
         // 4) If ENTER is pressed, transition from the home screen to the game
         if (input.wasPressed(Keys.ENTER) || input.wasPressed(Keys.NUM_1)) {
-            return true;
+            return 1;
+        }
+        else if (input.wasPressed(Keys.NUM_2)){
+            return 2;
         }
 
 
         // 5) Otherwise, remain on the home screen
-        return false;
+        return 0;
     }
 }

@@ -22,6 +22,9 @@ public class ShadowDonkeyKong extends AbstractGame {
 
     public static double screenHeight;
 
+    private static int currLevel = -1;
+    private int score = 0;
+
     /**
      * Constructs a new instance of the ShadowDonkeyKong game.
      * Initializes the game window using provided properties and sets up the home screen.
@@ -54,11 +57,15 @@ public class ShadowDonkeyKong extends AbstractGame {
         if (input.wasPressed(Keys.ESCAPE)) {
             Window.close();
         }
-
+        int levelSelect = homeScreen.update(input);
         // Home Screen
         if (gamePlayScreen == null && gameEndScreen == null) {
-            if (homeScreen.update(input)) {
-                gamePlayScreen = new GamePlayScreen(GAME_PROPS);
+            if (levelSelect == 1) {
+                currLevel = 1;
+                gamePlayScreen = new Level1(GAME_PROPS, currLevel, 0);
+            } else if (levelSelect == 2) {
+                currLevel = 2;
+                gamePlayScreen = new Level2(GAME_PROPS, currLevel, 0);
             }
         }
         // Gameplay Screen
@@ -68,18 +75,27 @@ public class ShadowDonkeyKong extends AbstractGame {
                 boolean isWon = gamePlayScreen.isLevelCompleted();
 
                 // 1) GET THE SCORE
-                int finalScore = gamePlayScreen.getScore();
+                int finalScore = gamePlayScreen.getStartedScore();
                 int timeRemaining = gamePlayScreen.getSecondsLeft();
 
-                // 2) CREATE THE END SCREEN
-                gameEndScreen = new GameEndScreen(GAME_PROPS, MESSAGE_PROPS);
+                if (currLevel == 1 && isWon){
+                    currLevel = 2;
+                    score += (finalScore + 3 * timeRemaining);
+                    gamePlayScreen = new Level2(GAME_PROPS, currLevel, score);
+                }
+                else{
+                    // 2) CREATE THE END SCREEN
+                    gameEndScreen = new GameEndScreen(GAME_PROPS, MESSAGE_PROPS);
 
-                // 3) PASS finalScore
-                gameEndScreen.setIsWon(isWon);
-                gameEndScreen.setFinalScore(timeRemaining, finalScore);
+                    // 3) PASS finalScore
+                    gameEndScreen.setIsWon(isWon);
+                    gameEndScreen.setFinalScore(timeRemaining, finalScore);
 
-                // 4) Nullify gameplay
-                gamePlayScreen = null;
+
+                    // 4) Nullify gameplay
+                    gamePlayScreen = null;
+                }
+
             }
 
         }
@@ -88,9 +104,11 @@ public class ShadowDonkeyKong extends AbstractGame {
             if (gameEndScreen.update(input)) {
                 gamePlayScreen = null;
                 gameEndScreen = null;
+                score = 0;
             }
         }
     }
+
 
     /**
      * Retrieves the width of the game screen.
@@ -109,6 +127,7 @@ public class ShadowDonkeyKong extends AbstractGame {
     public static double getScreenHeight() {
         return screenHeight;
     }
+
 
     /**
      * The main entry point of the Shadow Donkey Kong game.
