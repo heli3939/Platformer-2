@@ -9,6 +9,7 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
     private double velocityY = 0; // Vertical velocity
     private boolean isJumping = false; // Whether Mario is currently jumping
     private boolean hasHammer = false; // Whether Mario has collected a hammer
+    private boolean hasBlaster = false; // Whether Mario has collected a blaster
 
     // store image path for mario face left and right
     private final static String MARIOL_IMG = "res/mario_left.png";
@@ -18,6 +19,10 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
     private final static String MARIOLH_IMG = "res/mario_hammer_left.png";
     private final static String MARIORH_IMG = "res/mario_hammer_right.png";
 
+    // store image path for mario face left and right with a blaster
+    private final static String MARIOLB_IMG = "res/mario_blaster_left.png";
+    private final static String MARIORB_IMG = "res/mario_blaster_right.png";
+
 
     // Mario images for different states
     private Image marioImage;
@@ -25,6 +30,8 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
     private final Image MARIO_LEFT_IMAGE = new Image(MARIOL_IMG);
     private final Image MARIO_HAMMER_LEFT_IMAGE = new Image(MARIOLH_IMG);
     private final Image MARIO_HAMMER_RIGHT_IMAGE = new Image(MARIORH_IMG);
+    private final Image MARIO_BLASTER_LEFT_IMAGE = new Image(MARIOLB_IMG);
+    private final Image MARIO_BLASTER_RIGHT_IMAGE = new Image(MARIORB_IMG);
 
 
     // Movement physics constants
@@ -64,6 +71,25 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
 
 
     /**
+     * Sets whether Mario has picked up the blaster.
+     *
+     * @param status {@code true} if Mario has the blaster, {@code false} otherwise.
+     */
+    public void setHasBlaster(boolean status) {
+        this.hasBlaster = status;
+    }
+
+    /**
+     * Checks if Mario has the blaster.
+     *
+     * @return {@code true} if Mario has the blaster, {@code false} otherwise.
+     */
+    public boolean holdBlaster() {
+        return this.hasBlaster;
+    }
+
+
+    /**
      * Updates Mario's movement, jumping, ladder climbing, hammer collection, and interactions.
      * This method is called every frame to process player input and update Mario's state.
      *
@@ -72,11 +98,17 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
      * @param platforms The array of platforms in the game that Mario can walk on.
      * @param hammers    The array of hammer objects that Mario can collect and use.
      */
-    public void update(Input input, Ladder[] ladders, Platform[] platforms, Hammer[] hammers) {
+    public void update(Input input, Ladder[] ladders, Platform[] platforms, Hammer[] hammers, Blaster[] blasters) {
         handleHorizontalMovement(input); // 1) Horizontal movement
         for (Hammer hammer: hammers){
             updateSprite(hammer); // 2) Update Mario’s current sprite (hammer or not, facing left or right)
             handleHammerCollection(hammer); // 3) If you just picked up the hammer:
+        }
+
+        if (blasters != null){
+            for (Blaster blaster: blasters){
+                handleBlasterCollection(blaster);
+            }
         }
 
         updateSprite(); // 4) Now replace sprite (since either isFacingRight or hasHammer could have changed)
@@ -175,7 +207,7 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
             double ladderTop    = ladder.getY() - (ladder.getHeight() / 2);
             double ladderBottom = ladder.getY() + (ladder.getHeight() / 2);
 
-            if (isTouchingLadder(ladder)) {
+            if (isCollide(ladder)) {
                 // Check horizontal overlap so Mario is truly on the ladder
                 if (marioRight - marioImage.getWidth() / 2 > ladderLeft && marioRight - marioImage.getWidth() / 2 < ladderRight) {
                     isOnLadder = true;
@@ -238,11 +270,22 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
 
     /** Handles collecting the hammer if Mario is in contact with it. */
     private void handleHammerCollection(Hammer hammer) {
-
-        if (!hammer.isCollected() && isTouchingHammer(hammer)) {
+        if (!hammer.isCollected() && isCollide(hammer)) {
             setHasHammer(true);
+            setHasBlaster(false);
             hammer.collect();
             System.out.println("Hammer collected!");
+        }
+    }
+
+    /** Handles collecting the hammer if Mario is in contact with it. */
+    private void handleBlasterCollection(Blaster blaster) {
+
+        if (!blaster.isCollected() && isCollide(blaster)) {
+            setHasBlaster(true);
+            setHasHammer(false);
+            blaster.collect();
+            System.out.println("Blaster collected!");
         }
     }
 
@@ -305,10 +348,12 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
         double oldHeight = oldImage.getHeight();
         double oldBottom = y + (oldHeight / 2);
 
-        // 2) Assign the new image based on facing & hammer
+        // 2) Assign the new image based on facing & hammer & blater
         //    (Whatever logic you currently use in update())
         if (hasHammer) {
             marioImage = isFacingRight ? MARIO_HAMMER_RIGHT_IMAGE : MARIO_HAMMER_LEFT_IMAGE;
+        } else if (hasBlaster) {
+            marioImage = isFacingRight ? MARIO_BLASTER_RIGHT_IMAGE : MARIO_BLASTER_LEFT_IMAGE;
         } else {
             marioImage = isFacingRight ? MARIO_RIGHT_IMAGE : MARIO_LEFT_IMAGE;
         }
@@ -324,50 +369,6 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
         // 5) Update the recorded width/height to match the new image
         width  = marioImage.getWidth();
         height = newHeight;
-    }
-
-    /**
-     * Checks if Mario is touching a ladder.
-     *
-     * @param ladder The ladder object to check collision with.
-     * @return {@code true} if Mario is touching the ladder, {@code false} otherwise.
-     */
-    private boolean isTouchingLadder(Ladder ladder) {
-        Rectangle marioBounds = getBoundingBox();
-        return marioBounds.intersects(ladder.getBoundingBox());
-    }
-
-    /**
-     * Checks if Mario is touching the hammer.
-     *
-     * @param hammer The hammer object to check collision with.
-     * @return {@code true} if Mario is touching the hammer, {@code false} otherwise.
-     */
-    private boolean isTouchingHammer(Hammer hammer) {
-        Rectangle marioBounds = getBoundingBox();
-        return marioBounds.intersects(hammer.getBoundingBox());
-    }
-
-    /**
-     * Checks if Mario is touching a barrel.
-     *
-     * @param barrel The barrel object to check collision with.
-     * @return {@code true} if Mario is touching the barrel, {@code false} otherwise.
-     */
-    public boolean isTouchingBarrel(Barrel barrel) {
-        Rectangle marioBounds = getBoundingBox();
-        return marioBounds.intersects(barrel.getBoundingBox());
-    }
-
-    /**
-     * Checks if Mario has reached Donkey Kong.
-     *
-     * @param donkey The Donkey object to check collision with.
-     * @return {@code true} if Mario has reached Donkey Kong, {@code false} otherwise.
-     */
-    public boolean hasReached(Donkey donkey) {
-        Rectangle marioBounds = getBoundingBox();
-        return marioBounds.intersects(donkey.getBoundingBox());
     }
 
     /**

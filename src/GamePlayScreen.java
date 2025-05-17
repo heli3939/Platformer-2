@@ -1,19 +1,22 @@
 import bagel.*;
 import bagel.Input;
+
+import java.util.ArrayList;
 import java.util.Properties;
 
 /**
  * Represents the main gameplay screen where the player controls Mario.
  * This class manages game objects, updates their states, and handles game logic.
  */
-public class GamePlayScreen {
+public abstract class GamePlayScreen {
     private final Properties GAME_PROPS;
 
-    // Game objects
+    // Game objectss
     private Mario mario;
     private Barrel[] barrels;   // Array of barrels in the game
     private Ladder[] ladders;   // Array of ladders in the game
     private Hammer[] hammers;      // The hammer object that Mario can collect
+    private Blaster[] blasters = new Blaster[0];
     private Donkey donkey;      // Donkey Kong, the objective of the game
     private Image background;   // Background image for the game
     private Platform[] platforms; // Array of platforms in the game
@@ -76,9 +79,34 @@ public class GamePlayScreen {
         this.background = new Image("res/background.png");
         this.currLevel = currLevel;
         this.startedScore = startedScore;
-
         // Initialize game objects
         initializeGameObjects();
+    }
+
+    public interface EntityFactory<T extends GameEntity> {
+        T create(String[] entityStr);
+    }
+
+    <T extends GameEntity> ArrayList<T> loadEntities(
+            Properties props, String prefix,
+            int currLevel, EntityFactory<T> factory
+    ) {
+        ArrayList<T> entities = new ArrayList<>();
+        String baseKey = prefix + ".level" + currLevel;
+        int count = Integer.parseInt(props.getProperty(baseKey + ".count"));
+
+        for (int i = 1; i <= count; i++) {
+            String data = props.getProperty(baseKey + "." + i);
+            if (data == null) continue;
+            String[] entityStr = data.split(";");
+            try {
+                T entity = factory.create(entityStr);
+                entities.add(entity);
+            } catch (Exception e) {
+                System.out.println("Error creating " + prefix + "." + i + ": " + e.getMessage());
+            }
+        }
+        return entities;
     }
 
     /**
@@ -96,48 +124,6 @@ public class GamePlayScreen {
         double donkeyX = Double.parseDouble(DonkeyCoord[0]);
         double donkeyY = Double.parseDouble(DonkeyCoord[1]);
         this.donkey = new Donkey(donkeyX, donkeyY);
-
-        // 3) Create the Barrels array
-        int barrelCount = Integer.parseInt(GAME_PROPS.getProperty("barrel.level" + currLevel + ".count"));
-        this.barrels = new Barrel[barrelCount];
-        int barrelIndex = 0;
-        for (int i = 1; i <= barrelCount; i++) {
-            String barrelData = GAME_PROPS.getProperty("barrel.level" + currLevel + "." + i);
-            if (barrelData != null) {
-                String[] coords = barrelData.split(",");
-                if (coords.length < 2) {
-                    System.out.println("Warning: Incomplete data for barrel." + i);
-                    continue; // Skip invalid entries
-                }
-                double barrelX = Double.parseDouble(coords[0]);
-                double barrelY = Double.parseDouble(coords[1]);
-                if (barrelIndex < barrelCount) {
-                    barrels[barrelIndex] = new Barrel(barrelX, barrelY);
-                    barrelIndex++;
-                }
-            }
-        }
-
-        // 4) Create the Ladders array
-        int ladderCount = Integer.parseInt(GAME_PROPS.getProperty("ladder.level" + currLevel + ".count"));
-        this.ladders = new Ladder[ladderCount];
-        int ladderIndex = 0;
-        for (int i = 1; i <= ladderCount; i++) {
-            String ladderData = GAME_PROPS.getProperty("ladder.level" + currLevel + "." + i);
-            if (ladderData != null) {
-                String[] coords = ladderData.split(",");
-                if (coords.length < 2) {
-                    System.out.println("Warning: Incomplete data for ladder." + i);
-                    continue; // Skip invalid entries
-                }
-                double ladderX = Double.parseDouble(coords[0]);
-                double ladderY = Double.parseDouble(coords[1]);
-                if (ladderIndex < ladderCount) {
-                    ladders[ladderIndex] = new Ladder(ladderX, ladderY);
-                    ladderIndex++;
-                }
-            }
-        }
 
         // 5) Create the Platforms array
         String platformData = GAME_PROPS.getProperty("platforms.level" + currLevel);
@@ -162,27 +148,37 @@ public class GamePlayScreen {
             this.platforms = new Platform[0]; // No platform data
         }
 
-        // 6) Create Hammer
-        int hammerCount = Integer.parseInt(GAME_PROPS.getProperty("hammer.level" + currLevel + ".count"));
-        this.hammers = new Hammer[hammerCount];
-        int hammerIndex = 0;
-        for (int i = 1; i <= hammerCount; i++) {
-            String hammerData = GAME_PROPS.getProperty("hammer.level" + currLevel + "." + i);
-            if (hammerData != null) {
-                String[] coords = hammerData.split(",");
-                if (coords.length < 2) {
-                    System.out.println("Warning: Incomplete data for hammer." + i);
-                    continue; // Skip invalid entries
-                }
-                double hammerX = Double.parseDouble(coords[0]);
-                double hammerY = Double.parseDouble(coords[1]);
-                if (hammerIndex < hammerCount) {
-                    hammers[hammerIndex] = new Hammer(hammerX, hammerY);
-                    hammerIndex++;
-                }
+        // 1. Load barrels
+        this.barrels = loadEntities(GAME_PROPS, "barrel", currLevel, new EntityFactory<Barrel>() {
+            @Override
+            public Barrel create(String[] parts) {
+                String[] coords = parts[0].split(",");
+                return new Barrel(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
             }
-        }
+        }).toArray(new Barrel[0]);
 
+        // 2. Load ladders
+        this.ladders = loadEntities(GAME_PROPS, "ladder", currLevel, new EntityFactory<Ladder>() {
+            @Override
+            public Ladder create(String[] parts) {
+                String[] coords = parts[0].split(",");
+                return new Ladder(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
+            }
+        }).toArray(new Ladder[0]);
+
+        // 3. Load hammers
+        this.hammers = loadEntities(GAME_PROPS, "hammer", currLevel, new EntityFactory<Hammer>() {
+            @Override
+            public Hammer create(String[] parts) {
+                String[] coords = parts[0].split(",");
+                return new Hammer(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
+            }
+        }).toArray(new Hammer[0]);
+
+    }
+
+    public int getCurrLevel() {
+        return currLevel;
     }
 
     /**
@@ -217,7 +213,7 @@ public class GamePlayScreen {
             if (mario.jumpOver(barrel)) {
                 startedScore += BARREL_CROSS_SCORE;
             }
-            if (!barrel.isDestroyed() && mario.isTouchingBarrel(barrel)) {
+            if (!barrel.isDestroyed() && mario.isCollide(barrel)) {
                 if (!mario.holdHammer()) {
                     isGameOver = true;
                 } else {
@@ -240,16 +236,24 @@ public class GamePlayScreen {
         }
         donkey.draw();
 
+        if (currLevel == 2){
+            blasters = Level2.getBlasters();
+        }
+        else{
+            blasters = null;
+        }
         // 6) Update Mario
-        mario.update(input, ladders, platforms, hammers);
+        mario.update(input, ladders, platforms, hammers, blasters);
 
         // 7) Check if Mario reaches Donkey
-        if (mario.hasReached(donkey) && !mario.holdHammer()) {
+        if (mario.isCollide(donkey) && !mario.holdHammer()) {
             isGameOver = true;
         }
 
         // 8) Display startedScore and time left
         displayInfo();
+
+        updateExtra(input);
 
         // 9) Return game state
         return isGameOver || isLevelCompleted();
@@ -276,7 +280,7 @@ public class GamePlayScreen {
      *         indicating the level is completed; {@code false} otherwise.
      */
     public boolean isLevelCompleted() {
-        return mario.hasReached(donkey) && mario.holdHammer();
+        return mario.isCollide(donkey) && mario.holdHammer();
     }
 
     /**
@@ -291,4 +295,6 @@ public class GamePlayScreen {
     public boolean checkingGameTime() {
         return currFrame >= MAX_FRAMES;
     }
+
+    protected abstract void updateExtra(Input input);
 }

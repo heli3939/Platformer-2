@@ -98,6 +98,7 @@ public class ShadowDonkeyKong extends AbstractGame {
             }
 
         }
+
         // Game Over / Victory Screen
         else if (gamePlayScreen == null ) {
             if (gameEndScreen.update(input)) {
