@@ -39,6 +39,8 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
     private static final double MOVE_SPEED = 3.5;
     private static final double CLIMB_SPEED = 2;
 
+    private int bulletCount = 0;
+
     private boolean isFacingRight = true; // Mario's facing direction
 
     /**
@@ -273,6 +275,7 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
         if (!hammer.isCollected() && isCollide(hammer)) {
             setHasHammer(true);
             setHasBlaster(false);
+            bulletCount = 0;
             hammer.collect();
             System.out.println("Hammer collected!");
         }
@@ -282,11 +285,21 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
     private void handleBlasterCollection(Blaster blaster) {
 
         if (!blaster.isCollected() && isCollide(blaster)) {
+            if (!hasBlaster){
+                bulletCount = 5;
+            }
+            else{
+                bulletCount += 5;
+            }
             setHasBlaster(true);
             setHasHammer(false);
             blaster.collect();
-            System.out.println("Blaster collected!");
+            System.out.println("Blaster collected!" + bulletCount);
         }
+    }
+
+    public int getBulletCount() {
+        return bulletCount;
     }
 
     /** Handles jumping if Mario is on a platform and jump is requested. */

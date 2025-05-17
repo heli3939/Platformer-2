@@ -1,12 +1,18 @@
+import bagel.Font;
 import bagel.Input;
 import java.util.Properties;
 
 public class Level2 extends GamePlayScreen {
     private final Properties GAME_PROPS;
     private int currLevel;
+
+    private final int BULLET_DISPLAY_DIFF_Y = 30;
+    private static final String BLT_MESSAGE = "BULLET ";
+
     // New game objects for Level2
     private int currFrame = 0;
-    private static Blaster[] blasters;   // Array of blaster in level2
+    private int bulletCount = 0;
+    protected  Blaster[] blasters;   // Array of blaster in level2
 
 
     public Level2(Properties gameProps, int currLevel, int startedScore) {
@@ -26,9 +32,17 @@ public class Level2 extends GamePlayScreen {
         }
     }
 
-    public static Blaster[] getBlasters() {
+    @Override
+    protected void disPlayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y) {
+        STATUS_FONT.drawString(BLT_MESSAGE + mario.getBulletCount(),
+                DKH_X, DKH_Y + BULLET_DISPLAY_DIFF_Y);
+
+    }
+
+    protected Blaster[] getBlasters() {
         return blasters;
     }
+
 
     private void initializeGameObjects2() {
         // 1. Load blasters

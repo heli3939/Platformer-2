@@ -1,3 +1,4 @@
+import bagel.Font;
 import bagel.Input;
 
 import java.util.Properties;
@@ -10,6 +11,11 @@ public class Level1 extends GamePlayScreen{
 
     @Override
     protected void updateExtra(Input input) {
+
+    }
+
+    @Override
+    protected void disPlayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y) {
 
     }
 }

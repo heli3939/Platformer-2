@@ -12,7 +12,7 @@ public abstract class GamePlayScreen {
     private final Properties GAME_PROPS;
 
     // Game objectss
-    private Mario mario;
+    protected Mario mario;
     private Barrel[] barrels;   // Array of barrels in the game
     private Ladder[] ladders;   // Array of ladders in the game
     private Hammer[] hammers;      // The hammer object that Mario can collect
@@ -24,6 +24,8 @@ public abstract class GamePlayScreen {
     // Frame tracking
     private int currFrame = 0;  // Tracks the number of frames elapsed
 
+    private int donkeyHP = 5;
+
     // Game parameters
     private final int MAX_FRAMES;  // Maximum number of frames before game ends
 
@@ -31,8 +33,12 @@ public abstract class GamePlayScreen {
     private final Font STATUS_FONT;
     private final int SCORE_X;
     private final int SCORE_Y;
+    private final int DKH_X;
+    private final int DKH_Y;
+
     private static final String SCORE_MESSAGE = "SCORE ";
     private static final String TIME_MESSAGE = "Time Left ";
+    private static final String DKH_MESSAGE = "DONKEY HEALTH ";
 
     private static final int BARREL_SCORE = 100;
     private static final int TIME_DISPLAY_DIFF_Y = 30;
@@ -76,6 +82,10 @@ public abstract class GamePlayScreen {
         );
         this.SCORE_X = Integer.parseInt(gameProps.getProperty("gamePlay.score.x"));
         this.SCORE_Y = Integer.parseInt(gameProps.getProperty("gamePlay.score.y"));
+
+        this.DKH_X = Integer.parseInt(gameProps.getProperty("gamePlay.donkeyhealth.coords").split(",")[0]);
+        this.DKH_Y = Integer.parseInt(gameProps.getProperty("gamePlay.donkeyhealth.coords").split(",")[1]);
+
         this.background = new Image("res/background.png");
         this.currLevel = currLevel;
         this.startedScore = startedScore;
@@ -236,8 +246,8 @@ public abstract class GamePlayScreen {
         }
         donkey.draw();
 
-        if (currLevel == 2){
-            blasters = Level2.getBlasters();
+        if (currLevel == 2 && this instanceof Level2){
+            blasters = ((Level2) this).getBlasters();
         }
         else{
             blasters = null;
@@ -247,6 +257,7 @@ public abstract class GamePlayScreen {
 
         // 7) Check if Mario reaches Donkey
         if (mario.isCollide(donkey) && !mario.holdHammer()) {
+            donkeyHP = 0;
             isGameOver = true;
         }
 
@@ -270,6 +281,8 @@ public abstract class GamePlayScreen {
         int TIME_X = SCORE_X;
         int TIME_Y = SCORE_Y + TIME_DISPLAY_DIFF_Y;
         STATUS_FONT.drawString(TIME_MESSAGE + secondsLeft, TIME_X, TIME_Y);
+        STATUS_FONT.drawString(DKH_MESSAGE + donkeyHP, DKH_X, DKH_Y);
+        disPlayBullet(STATUS_FONT, DKH_X, DKH_Y);
     }
 
     /**
@@ -297,4 +310,5 @@ public abstract class GamePlayScreen {
     }
 
     protected abstract void updateExtra(Input input);
+    protected abstract void disPlayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y);
 }
