@@ -80,7 +80,7 @@ public class ShadowDonkeyKong extends AbstractGame {
 
                 if (currLevel == 1 && isWon){
                     currLevel = 2;
-                    score += (finalScore + 3 * timeRemaining);
+                    score += finalScore;
                     gamePlayScreen = new Level2(GAME_PROPS, currLevel, score);
                 }
                 else{
@@ -90,7 +90,6 @@ public class ShadowDonkeyKong extends AbstractGame {
                     // 3) PASS finalScore
                     gameEndScreen.setIsWon(isWon);
                     gameEndScreen.setFinalScore(timeRemaining, finalScore);
-
 
                     // 4) Nullify gameplay
                     gamePlayScreen = null;
