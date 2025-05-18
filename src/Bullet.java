@@ -44,11 +44,12 @@ public class Bullet extends GameEntity implements HorizontallyMovable{
         isBulletRight = bulletRight;
     }
 
-    public void distCheck(){
+    private void distCheck(){
         if (distTravel > MAXDISTBULLET){
             setActive(false);
         }
     }
+
 
     public boolean isActive() {
         return isActive;

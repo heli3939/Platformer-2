@@ -17,7 +17,7 @@ public abstract class GamePlayScreen {
     private Ladder[] ladders;   // Array of ladders in the game
     private Hammer[] hammers;      // The hammer object that Mario can collect
     private Blaster[] blasters = new Blaster[0];
-    private Donkey donkey;      // Donkey Kong, the objective of the game
+    protected Donkey donkey;      // Donkey Kong, the objective of the game
     private Image background;   // Background image for the game
     private Platform[] platforms; // Array of platforms in the game
 
@@ -187,6 +187,14 @@ public abstract class GamePlayScreen {
 
     }
 
+    public int getDonkeyHP() {
+        return donkeyHP;
+    }
+
+    public void setDonkeyHP(int donkeyHP) {
+        this.donkeyHP = donkeyHP;
+    }
+
     public int getCurrLevel() {
         return currLevel;
     }
@@ -293,7 +301,7 @@ public abstract class GamePlayScreen {
      *         indicating the level is completed; {@code false} otherwise.
      */
     public boolean isLevelCompleted() {
-        return mario.isCollide(donkey) && mario.holdHammer();
+        return (mario.isCollide(donkey) && mario.holdHammer()) || getDonkeyHP() == 0;
     }
 
     /**

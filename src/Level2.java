@@ -12,6 +12,7 @@ public class Level2 extends GamePlayScreen {
     private final int BULLET_DISPLAY_DIFF_Y = 30;
     private static final String BLT_MESSAGE = "BULLET ";
 
+    private int donkeyHP = 5;
     // New game objects for Level2
     private int currFrame = 0;
     private int bulletCount = 0;
@@ -45,6 +46,18 @@ public class Level2 extends GamePlayScreen {
             }
         }
         bullets.removeAll(bulletsToRemove);
+        donkeyBeShot();
+    }
+
+    private void donkeyBeShot(){
+        for (Bullet bullet: bullets){
+            if (bullet.isCollide(donkey)){
+                donkeyHP = getDonkeyHP();
+                donkeyHP--;
+                bullet.setActive(false);
+                setDonkeyHP(donkeyHP);
+            }
+        }
     }
 
     @Override
