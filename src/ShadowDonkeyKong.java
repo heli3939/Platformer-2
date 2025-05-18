@@ -77,7 +77,6 @@ public class ShadowDonkeyKong extends AbstractGame {
                 // 1) GET THE SCORE
                 int finalScore = gamePlayScreen.getStartedScore();
                 int timeRemaining = gamePlayScreen.getSecondsLeft();
-
                 if (currLevel == 1 && isWon){
                     currLevel = 2;
                     score += finalScore;

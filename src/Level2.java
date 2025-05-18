@@ -1,5 +1,8 @@
 import bagel.Font;
 import bagel.Input;
+import bagel.Keys;
+
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class Level2 extends GamePlayScreen {
@@ -13,6 +16,7 @@ public class Level2 extends GamePlayScreen {
     private int currFrame = 0;
     private int bulletCount = 0;
     protected  Blaster[] blasters;   // Array of blaster in level2
+    private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 
 
     public Level2(Properties gameProps, int currLevel, int startedScore) {
@@ -30,13 +34,42 @@ public class Level2 extends GamePlayScreen {
                 blaster.draw();
             }
         }
+        shootBullet(input);
+
+        // Update all bullets every frame
+        ArrayList<Bullet> bulletsToRemove = new ArrayList<>();
+        for (Bullet bullet : bullets) {
+            bullet.update(mario);
+            if (!bullet.isActive()) {
+                bulletsToRemove.add(bullet);
+            }
+        }
+        bullets.removeAll(bulletsToRemove);
     }
 
     @Override
     protected void disPlayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y) {
         STATUS_FONT.drawString(BLT_MESSAGE + mario.getBulletCount(),
                 DKH_X, DKH_Y + BULLET_DISPLAY_DIFF_Y);
+    }
 
+
+    private void shootBullet(Input input){
+        bulletCount =  mario.getBulletCount();
+        if (mario.holdBlaster() && bulletCount != 0 && input.wasPressed(Keys.S)){
+            bulletCount--;
+            mario.setBulletCount(bulletCount);
+            System.out.println("SHOT");
+            bullets.add(new Bullet(mario.x, mario.y));
+            if (!bullets.isEmpty()){
+                for (Bullet bullet: bullets){
+                    bullet.update(mario);
+                }
+            }
+        }
+        if (bulletCount == 0){
+            mario.setHasBlaster(false);
+        }
     }
 
     protected Blaster[] getBlasters() {

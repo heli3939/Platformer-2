@@ -36,7 +36,6 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
 
     // Movement physics constants
     private static final double JUMP_STRENGTH = -5;
-    private static final double MOVE_SPEED = 3.5;
     private static final double CLIMB_SPEED = 2;
 
     private int bulletCount = 0;
@@ -149,6 +148,10 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
         marioImage.draw(x, y);
     }
 
+    public boolean isFacingRight() {
+        return isFacingRight;
+    }
+
     /**
      * Handles Mario's interaction with platforms to determine if he is standing on one.
      * Mario will only snap to a platform if he is moving downward (velocityY >= 0),
@@ -255,10 +258,10 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
     /** Handles horizontal movement based on player input. */
     private void handleHorizontalMovement(Input input) {
         if (input.isDown(Keys.LEFT)) {
-            x -= MOVE_SPEED;
+            x -= HorizontallyMovable.MARIO_MOVE_SPEED;
             isFacingRight = false;
         } else if (input.isDown(Keys.RIGHT)) {
-            x += MOVE_SPEED;
+            x += HorizontallyMovable.MARIO_MOVE_SPEED;
             isFacingRight = true;
         }
     }
@@ -300,6 +303,10 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
 
     public int getBulletCount() {
         return bulletCount;
+    }
+
+    public void setBulletCount(int bulletCount) {
+        this.bulletCount = bulletCount;
     }
 
     /** Handles jumping if Mario is on a platform and jump is requested. */
