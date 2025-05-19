@@ -19,7 +19,7 @@ public abstract class GamePlayScreen {
     private Blaster[] blasters = new Blaster[0];
     protected Donkey donkey;      // Donkey Kong, the objective of the game
     private Image background;   // Background image for the game
-    private Platform[] platforms; // Array of platforms in the game
+    protected Platform[] platforms; // Array of platforms in the game
 
     // Frame tracking
     private int currFrame = 0;  // Tracks the number of frames elapsed

@@ -18,6 +18,7 @@ public class Level2 extends GamePlayScreen {
     private int bulletCount = 0;
     protected  Blaster[] blasters;   // Array of blaster in level2
     private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+    protected Monkey[] monkeys;
 
 
     public Level2(Properties gameProps, int currLevel, int startedScore) {
@@ -47,6 +48,11 @@ public class Level2 extends GamePlayScreen {
         }
         bullets.removeAll(bulletsToRemove);
         donkeyBeShot();
+        int i = 0;
+        for (Monkey monkey: monkeys){
+            monkey.draw();
+            monkey.update(platforms);
+        }
     }
 
     private void donkeyBeShot(){
@@ -99,6 +105,23 @@ public class Level2 extends GamePlayScreen {
                 return new Blaster(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
             }
         }).toArray(new Blaster[0]);
+
+        String nMonkeyBaseKey = "normalMonkey.level2.";
+        int nMonkeyCount = Integer.parseInt(GAME_PROPS.getProperty(nMonkeyBaseKey + "count"));
+        monkeys = new Monkey[nMonkeyCount];
+        for (int i = 1; i <= nMonkeyCount; i++){
+            String[] nMonkeyinfo = GAME_PROPS.getProperty(nMonkeyBaseKey + i).split(";");
+            String[] coords = nMonkeyinfo[0].split(",");
+            boolean isNMonkeyFacingRight = (nMonkeyinfo[1].equals("right")) ? true : false;
+            int lenWalkPattern = (nMonkeyinfo[2].split(",")).length;
+            int[] walkPattern = new int[lenWalkPattern];
+            for (int j = 0; j < lenWalkPattern; j++){
+                walkPattern[j] = Integer.parseInt(nMonkeyinfo[2].split(",")[j]);
+            }
+            monkeys[i - 1] = new Monkey(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]),
+                    isNMonkeyFacingRight, lenWalkPattern, walkPattern);
+
+        }
     }
 
 

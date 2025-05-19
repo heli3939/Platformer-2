@@ -89,7 +89,7 @@ public class Barrel extends GameEntity implements PhysicsAffected{
         }
         // Check for platform collisions
         for (Platform platform : platforms) {
-            if (this.getBoundingBox().intersects(platform.getBoundingBox())) {
+            if (this.isCollide(platform)) {
                 // Position Donkey on top of the platform
                 y = platform.getY() - (platform.getHeight() / 2) - (height / 2);
                 velocityY = 0; // Stop downward movement
