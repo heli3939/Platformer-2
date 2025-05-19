@@ -265,7 +265,6 @@ public abstract class GamePlayScreen {
 
         // 7) Check if Mario reaches Donkey
         if (mario.isCollide(donkey) && !mario.holdHammer()) {
-            donkeyHP = 0;
             isGameOver = true;
         }
 
