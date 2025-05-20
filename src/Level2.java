@@ -120,7 +120,6 @@ public class Level2 extends GamePlayScreen {
             }
             monkeys[i - 1] = new Monkey(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]),
                     isNMonkeyFacingRight, lenWalkPattern, walkPattern);
-
         }
     }
 
