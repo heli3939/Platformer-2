@@ -48,13 +48,22 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
 
     public void update(Platform[] platforms){
         if (isAlive){
-            monkeyImage = isFacingRight ? NMONKEY_RIGHT_IMAGE : NMONKEY_LEFT_IMAGE;
+            monkeyImage = getMonkeyImage();
             applyGravity(platforms);
             LRMove(platforms, isFacingRight, lenWalkPattern, walkPattern);
             updateSprite();
         }
         else{
             x = OUTOFSCREEN;
+        }
+    }
+
+    public Image getMonkeyImage() {
+        if (this instanceof IntelliMonkey){
+            return isFacingRight ? IMONKEY_RIGHT_IMAGE : IMONKEY_LEFT_IMAGE;
+        }
+        else{
+            return isFacingRight ? NMONKEY_RIGHT_IMAGE : NMONKEY_LEFT_IMAGE;
         }
     }
 
@@ -79,7 +88,7 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
             i++;
             this.distCount = 0;
             this.isFacingRight = !isFacingRight;
-            monkeyImage =  this.isFacingRight ? NMONKEY_RIGHT_IMAGE : NMONKEY_LEFT_IMAGE;
+            monkeyImage = getMonkeyImage();
         }
     }
 
@@ -106,8 +115,7 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
         // 2) Assign the new image based on facing & hammer & blater
         //    (Whatever logic you currently use in update())
 
-        monkeyImage = isFacingRight ? NMONKEY_RIGHT_IMAGE : NMONKEY_LEFT_IMAGE;
-
+        monkeyImage = getMonkeyImage();
         // 3) Now recalc Mario’s bottom with the new image
         double newHeight = monkeyImage.getHeight();
         double newBottom = y + (newHeight / 2);
