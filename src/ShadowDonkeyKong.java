@@ -4,7 +4,7 @@ import java.util.Properties;
 /**
  * The main class for the Shadow Donkey Kong game.
  * This class extends {@code AbstractGame} and is responsible for managing game initialization,
- * updates, rendering, and handling user input.
+// * updates, rendering, and handling user input.
  *
  * It sets up the game world, initializes characters, platforms, ladders, and other game objects,
  * and runs the game loop to ensure smooth gameplay.

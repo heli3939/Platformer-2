@@ -15,6 +15,7 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
     private final static String IMONKEYL_IMG = "res/intelli_monkey_left.png";
     private final static String IMONKEYR_IMG = "res/intelli_monkey_right.png";
 
+    private final int OUTOFSCREEN = -10000;
 
     // Mario images for different states
     private Image monkeyImage;
@@ -29,6 +30,7 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
 
     private double distCount = 0;
     private int i = 0;
+    private boolean isAlive = true;
 
 
     public Monkey(double x, double y, boolean isNMonkeyFacingRight, int lenWalkPattern, int[] walkPattern) {
@@ -45,17 +47,19 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
     }
 
     public void update(Platform[] platforms){
-//        System.out.println(this.x);
-//        System.out.println(isFacingRight);
-        monkeyImage = isFacingRight ? NMONKEY_RIGHT_IMAGE : NMONKEY_LEFT_IMAGE;
-        applyGravity(platforms);
-        LRMove(platforms, isFacingRight, lenWalkPattern, walkPattern);
-//        enforceBoundaries();
-        updateSprite();
+        if (isAlive){
+            monkeyImage = isFacingRight ? NMONKEY_RIGHT_IMAGE : NMONKEY_LEFT_IMAGE;
+            applyGravity(platforms);
+            LRMove(platforms, isFacingRight, lenWalkPattern, walkPattern);
+            updateSprite();
+        }
+        else{
+            x = OUTOFSCREEN;
+        }
     }
 
     private void LRMove(Platform[] platforms, boolean isFacingRight, int lenWalkPattern, int[] walkPattern){
-        if (this.isFacingRight){
+        if (isFacingRight){
             x += MONKEY_MOVE_SPEED;
         }
         else{
@@ -63,31 +67,20 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
         }
         this.distCount += MONKEY_MOVE_SPEED;
         boolean onEdge = true;
-        double nextX = this.isFacingRight ? x + MONKEY_MOVE_SPEED : x - MONKEY_MOVE_SPEED;
+        double nextX = isFacingRight ? x + MONKEY_MOVE_SPEED : x - MONKEY_MOVE_SPEED;
         Rectangle footArea = new Rectangle(nextX, y + currentImage.getHeight() + 1, 1, 1);
         for (Platform platform : platforms) { // Pass platforms into monkey during update
-            if (platform.getBoundingBox().intersects(footArea)) {
-                onEdge = false;
+            onEdge = platform.getBoundingBox().intersects(footArea);
+            if (onEdge){
                 break;
             }
         }
-        if ((this.distCount >= walkPattern[i % lenWalkPattern]) || onEdge) {
+        if ((this.distCount >= walkPattern[i % lenWalkPattern]) || !onEdge && velocityY == 0) {
             i++;
-//            draw();
             this.distCount = 0;
-            this.isFacingRight = !this.isFacingRight;
+            this.isFacingRight = !isFacingRight;
             monkeyImage =  this.isFacingRight ? NMONKEY_RIGHT_IMAGE : NMONKEY_LEFT_IMAGE;
         }
-
-
-    }
-
-    public boolean isFacingRight() {
-        return isFacingRight;
-    }
-
-    public void setFacingRight(boolean facingRight) {
-        isFacingRight = facingRight;
     }
 
     @Override
@@ -113,7 +106,7 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
         // 2) Assign the new image based on facing & hammer & blater
         //    (Whatever logic you currently use in update())
 
-        monkeyImage = isFacingRight() ? NMONKEY_RIGHT_IMAGE : NMONKEY_LEFT_IMAGE;
+        monkeyImage = isFacingRight ? NMONKEY_RIGHT_IMAGE : NMONKEY_LEFT_IMAGE;
 
         // 3) Now recalc Mario’s bottom with the new image
         double newHeight = monkeyImage.getHeight();
@@ -145,6 +138,15 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
                 break;
             }
         }
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void kill() {
+        isAlive = false;
+        System.out.println("Monkey Killed!");
     }
 
     @Override

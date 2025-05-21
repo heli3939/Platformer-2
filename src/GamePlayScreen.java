@@ -43,8 +43,8 @@ public abstract class GamePlayScreen {
     private static final int BARREL_SCORE = 100;
     private static final int TIME_DISPLAY_DIFF_Y = 30;
     private static final int BARREL_CROSS_SCORE = 30;
-    private int startedScore;  // Player's startedScore for jumping over barrels
-    private boolean isGameOver = false; // Game over flag
+    protected int startedScore;  // Player's startedScore for jumping over barrels
+    protected boolean isGameOver = false; // Game over flag
 
     private int currLevel;
 

@@ -10,6 +10,8 @@ public class Level2 extends GamePlayScreen {
     private int currLevel;
 
     private final int BULLET_DISPLAY_DIFF_Y = 30;
+    private static final int MONKEY_SCORE = 100;
+
     private static final String BLT_MESSAGE = "BULLET ";
 
     private int donkeyHP = 5;
@@ -44,6 +46,30 @@ public class Level2 extends GamePlayScreen {
             bullet.update(mario);
             if (!bullet.isActive()) {
                 bulletsToRemove.add(bullet);
+            }
+            if (bullet.isCollide(donkey)){
+                donkeyHP--;
+                setDonkeyHP(donkeyHP);
+            }
+            for (Monkey monkey: monkeys){
+                if (monkey.isAlive()){
+                     if (bullet.isCollide(monkey)){
+                        monkey.kill();
+                        startedScore += MONKEY_SCORE;
+                    }
+                }
+            }
+        }
+        for (Monkey monkey: monkeys) {
+            if (mario.isCollide(monkey)) {
+                if (mario.holdHammer()){
+                    monkey.kill();
+                    startedScore += MONKEY_SCORE;
+
+                }
+                else{
+                    isGameOver = true;
+                }
             }
         }
         bullets.removeAll(bulletsToRemove);
