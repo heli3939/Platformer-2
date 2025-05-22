@@ -17,6 +17,7 @@ public class HomeScreen {
     private final int TITLE_Y;             // Vertical position of the title
     private final int PROMPT_Y;            // Vertical position of the prompt
 
+    // use number to represent level
     private final int LEVEL1 = 1;
     private final int LEVEL2 = 2;
     private final int HOMESCREEN = 0;
@@ -69,12 +70,12 @@ public class HomeScreen {
         double promptX = Window.getWidth() / 2 - PROMPT_FONT.getWidth(PROMPT) / 2;
         PROMPT_FONT.drawString(PROMPT, promptX, PROMPT_Y);
 
-        // 4) If ENTER is pressed, transition from the home screen to the game
+        // 4) start keyboard input and go to corresponding level
         if (input.wasPressed(Keys.ENTER) || input.wasPressed(Keys.NUM_1)) {
-            return LEVEL1;
+            return LEVEL1; // go to level1 for press enter and 1
         }
         else if (input.wasPressed(Keys.NUM_2)){
-            return LEVEL2;
+            return LEVEL2; // go to level1 for press 2
         }
         // 5) Otherwise, remain on the home screen
         return HOMESCREEN;

@@ -11,8 +11,8 @@ public class GameEndScreen {
 
     private final String GAME_WON_TXT;  // Message displayed when the player wins
     private final String GAME_LOST_TXT; // Message displayed when the player loses
-    private final String CONTINUE_GAME_TXT;
-    private final String SCORE_MESSAGE;
+    private final String CONTINUE_GAME_TXT; // Message for continue play the game
+    private final String SCORE_MESSAGE; // Message for displaying score
 
     // Fonts for displaying win/loss message and final score
     private final Font STATUS_FONT;
@@ -26,8 +26,6 @@ public class GameEndScreen {
     // Weight of the scores
     private final double TIME_WEIGHT = 3.0;
     private double POINTS_WEIGHT = 1.0;
-
-
 
     // The final score from this playthrough
     private double finalScore = 0.0;
@@ -77,11 +75,10 @@ public class GameEndScreen {
      * @param gainedScore   The total points earned during the game.
      */
     public void setFinalScore(double timeRemaining, double gainedScore) {
-          // Weight assigned to time-based scoring
-        // Weight assigned to points-based scoring
-        if (isWon || timeRemaining == 0){
+        // Weight assigned to time-based and points-based scoring
+        if (isWon || timeRemaining == 0){ // get non-0 score if win or non-death loss
             this.finalScore = (TIME_WEIGHT * timeRemaining) + (POINTS_WEIGHT * gainedScore);
-        } else {
+        } else { // score = 0 if there's any death
             this.finalScore = 0;
         }
     }

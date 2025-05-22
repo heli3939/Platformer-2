@@ -53,7 +53,6 @@ public class Barrel extends GameEntity implements PhysicsAffected{
      */
     public void destroy() {
         isDestroyed = true;
-        System.out.println("Barrel destroyed!");
     }
 
     /**

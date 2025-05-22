@@ -24,24 +24,24 @@ public class Ladder extends GameEntity implements PhysicsAffected{
      */
     public void update(Platform[] platforms) {
         applyGravity(platforms);
-        // 5) Draw the ladder after updating position
+        // Draw the ladder after updating position
         draw();
     }
 
     @Override
     public void applyGravity(Platform[] platforms) {
-        // 1) Apply gravity
+        // Apply gravity
         velocityY += LADDER_GRAVITY;
 
-        // 2) Limit falling speed to terminal velocity
+        // Limit falling speed to terminal velocity
         if (velocityY > LADDER_TERMINAL_VELOCITY) {
             velocityY = LADDER_TERMINAL_VELOCITY;
         }
 
-        // 3) Move the ladder downward
+        // Move the ladder downward
         y += velocityY;
 
-        // 4) Check for collision with platforms
+        // Check for collision with platforms
         for (Platform platform : platforms) {
             if (getBoundingBox().intersects(platform.getBoundingBox())) {
                 // Position the ladder on top of the platform

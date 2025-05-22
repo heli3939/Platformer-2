@@ -9,7 +9,7 @@ public class GameEntity {
     public double width;
 
     public GameEntity(String imagePath, double x, double y) {
-        this.currentImage = new Image(imagePath);
+        this.currentImage = new Image(imagePath); // image for provided image path
         this.x = x;
         this.y = y;
         this.height = this.currentImage.getHeight();

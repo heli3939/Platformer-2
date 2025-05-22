@@ -11,42 +11,45 @@ import java.util.Properties;
 public abstract class GamePlayScreen {
     private final Properties GAME_PROPS;
 
-    // Game objectss
+    // Game objectss for both levels and blasters for level2
     public Mario mario;
     private Barrel[] barrels;   // Array of barrels in the game
     private Ladder[] ladders;   // Array of ladders in the game
-    private Hammer[] hammers;      // The hammer object that Mario can collect
-    private Blaster[] blasters = new Blaster[0];
+    private Hammer[] hammers;      // Array of hammers object that Mario can collect
     public Donkey donkey;      // Donkey Kong, the objective of the game
     private Image background;   // Background image for the game
     public Platform[] platforms; // Array of platforms in the game
+    private Blaster[] blasters = new Blaster[0]; // Array of blasters object that Mario can collect
 
     // Frame tracking
     private int currFrame = 0;  // Tracks the number of frames elapsed
-
-    private int donkeyHP = 5;
+    private int donkeyHP = 5; // Store real-time value for donkey health
 
     // Game parameters
     private final int MAX_FRAMES;  // Maximum number of frames before game ends
 
-    // Display text variables
-    private final Font STATUS_FONT;
-    private final int SCORE_X;
-    private final int SCORE_Y;
-    private final int DKH_X;
-    private final int DKH_Y;
+    // Display text variables for game status
+    private final Font STATUS_FONT; // font for status info
+    private final int SCORE_X; // x-coord for score info
+    private final int SCORE_Y; // y-coord for score info
+    private final int DKH_X; // x-coord for donkey health info
+    private final int DKH_Y; // y-coord for donkey health info
+    private static final int TIME_DISPLAY_DIFF_Y = 30; // difference between y-coord of time and score
 
-    private static final String SCORE_MESSAGE = "SCORE ";
-    private static final String TIME_MESSAGE = "Time Left ";
-    private static final String DKH_MESSAGE = "DONKEY HEALTH ";
+    // Display message for game status
+    private static final String SCORE_MESSAGE = "SCORE ";  // text before display score
+    private static final String TIME_MESSAGE = "Time Left "; // text before display remaining time
+    private static final String DKH_MESSAGE = "DONKEY HEALTH "; // text before display donkey health value
 
-    private static final int BARREL_SCORE = 100;
-    private static final int TIME_DISPLAY_DIFF_Y = 30;
-    private static final int BARREL_CROSS_SCORE = 30;
+    // Score gain for game action
+    private static final int BARREL_SCORE = 100; // score gain for destroy a barrel
+    private static final int BARREL_CROSS_SCORE = 30; // score gain for jump across a barrel
+    
     public int startedScore;  // Player's startedScore for jumping over barrels
     public boolean isGameOver = false; // Game over flag
+    private int currLevel; // indicate current game level
 
-    private int currLevel;
+    private final int LEVEL2 = 2; // at level 2 of game
 
     /**
      * Returns the player's current startedScore.
@@ -93,6 +96,7 @@ public abstract class GamePlayScreen {
         initializeGameObjects();
     }
 
+
     public interface EntityFactory<T extends GameEntity> {
         T create(String[] entityStr);
     }
@@ -102,17 +106,21 @@ public abstract class GamePlayScreen {
             int currLevel, EntityFactory<T> factory
     ) {
         ArrayList<T> entities = new ArrayList<>();
+        // set base key as composition of entity prefix and level
         String baseKey = prefix + ".level" + currLevel;
+        // get number of the specific entity
         int count = Integer.parseInt(props.getProperty(baseKey + ".count"));
-
+        // read data for ith object for the entity
         for (int i = 1; i <= count; i++) {
             String data = props.getProperty(baseKey + "." + i);
             if (data == null) continue;
             String[] entityStr = data.split(";");
             try {
+                // create entity by factory
                 T entity = factory.create(entityStr);
                 entities.add(entity);
             } catch (Exception e) {
+                // error message for unable to create
                 System.out.println("Error creating " + prefix + "." + i + ": " + e.getMessage());
             }
         }
@@ -123,19 +131,19 @@ public abstract class GamePlayScreen {
      * Initializes game objects such as Mario, Donkey Kong, barrels, ladders, platforms, and the hammer.
      */
     private void initializeGameObjects() {
-        // 1) Create Mario
+        // Create Mario
         String[] marioCoord = GAME_PROPS.getProperty("mario.level" + currLevel).split(",");
         double marioX = Double.parseDouble(marioCoord[0]);
         double marioY = Double.parseDouble(marioCoord[1]);
         this.mario = new Mario(marioX, marioY);
 
-        // 2) Create Donkey Kong
+        // Create Donkey Kong
         String[] DonkeyCoord = GAME_PROPS.getProperty("donkey.level" + currLevel).split(",");
         double donkeyX = Double.parseDouble(DonkeyCoord[0]);
         double donkeyY = Double.parseDouble(DonkeyCoord[1]);
         this.donkey = new Donkey(donkeyX, donkeyY);
 
-        // 5) Create the Platforms array
+        // Create the Platforms array
         String platformData = GAME_PROPS.getProperty("platforms.level" + currLevel);
         if (platformData != null && !platformData.isEmpty()) {
             String[] platformEntries = platformData.split(";");
@@ -145,7 +153,7 @@ public abstract class GamePlayScreen {
                 String[] coords = entry.trim().split(",");
                 if (coords.length < 2) {
                     System.out.println("Warning: Invalid platform entry -> " + entry);
-                    continue; // Skip invalid entries
+                    continue; // Skip invalid entries with wrong coordinate format
                 }
                 double x = Double.parseDouble(coords[0]);
                 double y = Double.parseDouble(coords[1]);
@@ -158,7 +166,7 @@ public abstract class GamePlayScreen {
             this.platforms = new Platform[0]; // No platform data
         }
 
-        // 1. Load barrels
+        // Load barrels
         this.barrels = loadEntities(GAME_PROPS, "barrel", currLevel, new EntityFactory<Barrel>() {
             @Override
             public Barrel create(String[] parts) {
@@ -167,7 +175,7 @@ public abstract class GamePlayScreen {
             }
         }).toArray(new Barrel[0]);
 
-        // 2. Load ladders
+        // Load ladders
         this.ladders = loadEntities(GAME_PROPS, "ladder", currLevel, new EntityFactory<Ladder>() {
             @Override
             public Ladder create(String[] parts) {
@@ -176,7 +184,7 @@ public abstract class GamePlayScreen {
             }
         }).toArray(new Ladder[0]);
 
-        // 3. Load hammers
+        // Load hammers
         this.hammers = loadEntities(GAME_PROPS, "hammer", currLevel, new EntityFactory<Hammer>() {
             @Override
             public Hammer create(String[] parts) {
@@ -184,7 +192,6 @@ public abstract class GamePlayScreen {
                 return new Hammer(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
             }
         }).toArray(new Hammer[0]);
-
     }
 
     public int getDonkeyHP() {
@@ -206,26 +213,26 @@ public abstract class GamePlayScreen {
         // Draw background
         background.drawFromTopLeft(0, 0);
 
-        // 1) Draw and update platforms
+        // Draw and update platforms
         for (Platform platform : platforms) {
             if (platform != null) {
                 platform.draw();
             }
         }
-
-        // 2) Update ladders
+        // Update ladders
         for (Ladder ladder : ladders) {
             if (ladder != null) {
                 ladder.update(platforms);
             }
         }
-
-        // 3) Update barrels
+        // Update barrels
         for (Barrel barrel : barrels) {
             if (barrel == null) continue;
+            // gain mark for jump over barrel
             if (mario.jumpOver(barrel)) {
                 startedScore += BARREL_CROSS_SCORE;
             }
+            // handle collision between mario and barrel
             if (!barrel.isDestroyed() && mario.isCollide(barrel)) {
                 if (!mario.holdHammer()) {
                     isGameOver = true;
@@ -236,39 +243,36 @@ public abstract class GamePlayScreen {
             }
             barrel.update(platforms);
         }
-
-        // 4) Check game time and donkey status
+        // Check game time and donkey status
         if (checkingGameTime()) {
             isGameOver = true;
         }
         donkey.update(platforms);
-
-        // 5) Draw hammer and donkey
+        // draw hammers
         for (Hammer hammer: hammers){
             hammer.draw();
         }
+        // draw and update donkey
         donkey.draw();
-
-        if (currLevel == 2 && this instanceof Level2){
+        donkey.update(platforms);
+        // update blasters for level2 only
+        if (currLevel == LEVEL2 && this instanceof Level2){
             blasters = ((Level2) this).getBlasters();
         }
         else{
             blasters = null;
         }
-        // 6) Update Mario
+        // Update Mario
         mario.update(input, ladders, platforms, hammers, blasters);
-
-        // 7) Check if Mario reaches Donkey
+        // Check if Mario reaches Donkey
         if (mario.isCollide(donkey) && !mario.holdHammer()) {
             isGameOver = true;
         }
-
-        // 8) Display startedScore and time left
+        // Display shared status info
         displayInfo();
-
+        // Update extra entity for level2 only
         updateExtra(input);
-
-        // 9) Return game state
+        // Return game state
         return isGameOver || isLevelCompleted();
     }
 
@@ -277,14 +281,14 @@ public abstract class GamePlayScreen {
      */
     public void displayInfo() {
         STATUS_FONT.drawString(SCORE_MESSAGE + startedScore, SCORE_X, SCORE_Y);
-
         // Time left in seconds
         int secondsLeft = (MAX_FRAMES - currFrame) / 60;
         int TIME_X = SCORE_X;
         int TIME_Y = SCORE_Y + TIME_DISPLAY_DIFF_Y;
         STATUS_FONT.drawString(TIME_MESSAGE + secondsLeft, TIME_X, TIME_Y);
         STATUS_FONT.drawString(DKH_MESSAGE + donkeyHP, DKH_X, DKH_Y);
-        disPlayBullet(STATUS_FONT, DKH_X, DKH_Y);
+        // display bullet info for level2
+        displayBullet(STATUS_FONT, DKH_X, DKH_Y);
     }
 
     /**
@@ -312,5 +316,5 @@ public abstract class GamePlayScreen {
     }
 
     public abstract void updateExtra(Input input);
-    public abstract void disPlayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y);
+    public abstract void displayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y);
 }

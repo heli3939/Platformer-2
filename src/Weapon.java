@@ -3,8 +3,8 @@
  * The hammer can be collected by the player, at which point it disappears from the screen.
  */
 public  class Weapon extends GameEntity{
-    private boolean isCollected = false;
-    private double OUTOFSCREEN = -10000;
+    private boolean isCollected = false; // record if it's picked up by mario
+    private double OUTOFSCREEN = -10000; // a random point out side of the screen
 
     /**
      * Constructs a Weapon at the specified position.

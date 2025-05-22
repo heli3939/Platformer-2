@@ -10,11 +10,11 @@ public class Level1 extends GamePlayScreen{
 
     @Override
     public void updateExtra(Input input) {
-
+        // no extra update for level 1
     }
 
     @Override
-    public void disPlayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y) {
-
+    public void displayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y) {
+        // no bullet info for level 1
     }
 }

@@ -8,6 +8,7 @@ public abstract class Projectile extends GameEntity implements HorizontallyMovab
     }
 
     public void distCheck(double distTravel, int maxDist){
+        // deactivate the projectile if travel exceed the distance
         if (distTravel> maxDist) {
             setActive(false);
         }
@@ -18,6 +19,7 @@ public abstract class Projectile extends GameEntity implements HorizontallyMovab
         if (!isActive){
             x = OUTOFSCREEN;
         }
+        // only draw inside the screen when active
         currentImage.draw(x, y);
     }
 
@@ -39,6 +41,7 @@ public abstract class Projectile extends GameEntity implements HorizontallyMovab
 
     @Override
     public void enforceBoundaries() {
+        // ensure not travel outside of the screen
         if (x < 0 || x > ShadowDonkeyKong.getScreenWidth()){
             setActive(false);
         }

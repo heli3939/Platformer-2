@@ -14,23 +14,23 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
     private final static String IMONKEYL_IMG = "res/intelli_monkey_left.png";
     private final static String IMONKEYR_IMG = "res/intelli_monkey_right.png";
 
-    private final int OUTOFSCREEN = -10000;
+    private final int OUTOFSCREEN = -10000; // a random point out of screen boundary
 
-    // Mario images for different states
+    // monkey images for different types and directions
     private Image monkeyImage;
     private final Image NMONKEY_RIGHT_IMAGE = new Image(NMONKEYR_IMG);
     private final Image NMONKEY_LEFT_IMAGE = new Image(NMONKEYL_IMG);
     private final Image IMONKEY_LEFT_IMAGE = new Image(IMONKEYL_IMG);
     private final Image IMONKEY_RIGHT_IMAGE = new Image(IMONKEYR_IMG);
 
-    private boolean isFacingRight;
-    private int lenWalkPattern;
+    private boolean isFacingRight; // record facing direction of monkey
+    private int lenWalkPattern; // length of walk pattern
+    // walk pattern of monkey, store a sequence of integers indicate distance in pixel
     private int[] walkPattern = new int[lenWalkPattern];
 
-    private double distCount = 0;
-    private int i = 0;
-    private boolean isAlive = true;
-
+    private double distCount = 0; // count distance of current walk (in one direction)
+    private int i = 0; // count index of curent walk in the walking pattern
+    private boolean isAlive = true; // revords if the monkey is alive
 
     public Monkey(double x, double y, boolean isMonkeyFacingRight, int lenWalkPattern, int[] walkPattern) {
         super(NMONKEYL_IMG, x, y);
@@ -46,47 +46,53 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
     }
 
     public void update(Platform[] platforms){
+        // only update if alive
         if (isAlive){
             monkeyImage = getMonkeyImage();
             applyGravity(platforms);
             LRMove(platforms, isFacingRight, lenWalkPattern, walkPattern);
             updateSprite();
         }
-        else{
+        else{ // remove if killed
             x = OUTOFSCREEN;
         }
     }
 
     public Image getMonkeyImage() {
-        if (this instanceof IntelliMonkey){
+        // different image for different type of monkeys and directions
+        if (this instanceof IntelliMonkey){ // image for intell monkey
             return isFacingRight ? IMONKEY_RIGHT_IMAGE : IMONKEY_LEFT_IMAGE;
         }
-        else{
+        else{ // image for normal monkey
             return isFacingRight ? NMONKEY_RIGHT_IMAGE : NMONKEY_LEFT_IMAGE;
         }
     }
 
     private void LRMove(Platform[] platforms, boolean isFacingRight, int lenWalkPattern, int[] walkPattern){
-        if (isFacingRight){
+        if (isFacingRight){ // walk right when face right
             x += MONKEY_MOVE_SPEED;
         }
-        else{
+        else{ // walk left when face left
             x -= MONKEY_MOVE_SPEED;
         }
+        // count dist for current move
         this.distCount += MONKEY_MOVE_SPEED;
+        // used to check if monkey is on edge of platform, ensure it not fell off and turn around
         boolean onEdge = true;
         double nextX = isFacingRight ? x + MONKEY_MOVE_SPEED : x - MONKEY_MOVE_SPEED;
         Rectangle footArea = new Rectangle(nextX, y + currentImage.getHeight() + 1, 1, 1);
         for (Platform platform : platforms) { // Pass platforms into monkey during update
             onEdge = platform.getBoundingBox().intersects(footArea);
             if (onEdge){
-                break;
+                break; // confirm monkey is on edge
             }
         }
+        // turn around if on edge (include when just fell on the platform) or reach the distance for walking pattern
         if ((this.distCount >= walkPattern[i % lenWalkPattern]) || !onEdge && velocityY == 0) {
             i++;
             this.distCount = 0;
             this.isFacingRight = !isFacingRight;
+            // change direction of image
             monkeyImage = getMonkeyImage();
         }
     }
@@ -96,24 +102,19 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
      * Adjust Mario's 'y' so that the bottom edge stays consistent.
      */
     private void updateSprite() {
-        // 1) Remember the old image and its bottom
+        // Remember the old image and its bottom
         Image oldImage = monkeyImage;
         double oldHeight = oldImage.getHeight();
         double oldBottom = y + (oldHeight / 2);
-
-        // 2) Assign the new image based on facing & hammer & blater
-        //    (Whatever logic you currently use in update())
-
+        // Assign the new image based on direction
         monkeyImage = getMonkeyImage();
-        // 3) Now recalc Mario’s bottom with the new image
+        // Now recalc monkey’s bottom with the new image
         double newHeight = monkeyImage.getHeight();
         double newBottom = y + (newHeight / 2);
-
-        // 4) Shift 'y' so the bottom edge is the same as before
-        //    (If new sprite is taller, we move Mario up so he doesn't sink into platforms)
+        // Shift 'y' so the bottom edge is the same as before
+        // (If new sprite is taller, we move monkey up so he doesn't sink into platforms)
         y -= (newBottom - oldBottom);
-
-        // 5) Update the recorded width/height to match the new image
+        // Update the recorded width/height to match the new image
         width  = monkeyImage.getWidth();
         height = newHeight;
     }
@@ -151,19 +152,16 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
 
     @Override
     public void enforceBoundaries() {
-        // Calculate half the width of the Mario image (used for centering and boundary checks)
+        // Calculate half the width of the monkey image (used for centering and boundary checks)
         double halfW = monkeyImage.getWidth() / 2;
-
-        // Prevent Mario from moving beyond the left edge of the screen
+        // Prevent monkey from moving beyond the left edge of the screen
         if (x < halfW) {
             x = halfW;
         }
-
-        // Prevent Mario from moving beyond the right edge of the screen
+        // Prevent monkey from moving beyond the right edge of the screen
         double maxX = ShadowDonkeyKong.getScreenWidth() - halfW;
         if (x > maxX) {
             x = maxX;
         }
-
     }
 }

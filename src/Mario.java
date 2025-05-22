@@ -37,8 +37,9 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
     private static final double JUMP_STRENGTH = -5;
     private static final double CLIMB_SPEED = 2;
 
-    private int bulletCount = 0;
+    private final int FULLBLASTERBLT = 5; // number of bullets in unused blaster
 
+    private int bulletCount = 0;  // number of bullet own now
     private boolean isFacingRight = true; // Mario's facing direction
 
     /**
@@ -100,46 +101,35 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
      * @param hammers    The array of hammer objects that Mario can collect and use.
      */
     public void update(Input input, Ladder[] ladders, Platform[] platforms, Hammer[] hammers, Blaster[] blasters) {
-        handleHorizontalMovement(input); // 1) Horizontal movement
+        handleHorizontalMovement(input); // Horizontal movement
         for (Hammer hammer: hammers){
-//            updateSprite(hammer); // 2) Update Mario’s current sprite (hammer or not, facing left or right)
-            handleHammerCollection(hammer); // 3) If you just picked up the hammer:
+            handleHammerCollection(hammer); // picked up the hammer
         }
-
-        if (blasters != null){
+        if (blasters != null){ // only when blaster present in current game
             for (Blaster blaster: blasters){
-                handleBlasterCollection(blaster);
+                handleBlasterCollection(blaster); // pick up the blaster
             }
         }
-
-        updateSprite(); // 4) Now replace sprite (since either isFacingRight or hasHammer could have changed)
-
-        // 5) Ladder logic – check if on a ladder
+        updateSprite(); // Update Mario’s current sprite (hammer or not, facing left or right, blaster or not)
+        // Ladder logic – check if on a ladder
         boolean isOnLadder;
         isOnLadder = handleLadders(input, ladders);
-
-        // 6) Jump logic: if on platform (we'll detect after we move) but let's queue jump if needed
+        // Jump logic: if on platform (we'll detect after we move) but let's queue jump if needed
         boolean wantsToJump = input.wasPressed(Keys.SPACE);
-
-        // 7) If not on ladder, apply gravity, move Mario
+        // If not on ladder, apply gravity, move Mario
         if (!isOnLadder) {
             applyGravity(platforms);
         }
-
-        // 8) Actually move Mario vertically after gravity
+        // Actually move Mario vertically after gravity
         y += velocityY;
-
-        // 9) Check for platform collision AFTER Mario moves
+        // Check for platform collision AFTER Mario moves
         boolean onPlatform;
         onPlatform = handlePlatforms(platforms);
-
-        // 10) If we are on the platform, allow jumping; Prevent Mario from falling below the ground
+        //  If we are on the platform, allow jumping; Prevent Mario from falling below the ground
         handleJumping(onPlatform, wantsToJump);
-
-        // 11) Enforce horizontal screen bounds
+        // Enforce horizontal screen bounds
         enforceBoundaries();
-
-        // 12) Draw Mario
+        // Draw Mario
         draw();
     }
 
@@ -163,18 +153,15 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
      */
     private boolean handlePlatforms(Platform[] platforms) {
         boolean onPlatform = false;
-
         // We'll only snap Mario to a platform if he's moving downward (velocityY >= 0)
         // so we don't kill his jump in mid-air.
         if (velocityY >= 0) {
             for (Platform platform : platforms) {
                 Rectangle marioBounds    = getBoundingBox();
                 Rectangle platformBounds = platform.getBoundingBox();
-
                 if (marioBounds.intersects(platformBounds)) {
                     double marioBottom = marioBounds.bottom();
                     double platformTop = platformBounds.top();
-
                     // If Mario's bottom is at or above the platform's top
                     // and not far below it (a small threshold based on velocity)
                     if (marioBottom <= platformTop + velocityY) {
@@ -216,23 +203,19 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
                 // Check horizontal overlap so Mario is truly on the ladder
                 if (marioRight - marioImage.getWidth() / 2 > ladderLeft && marioRight - marioImage.getWidth() / 2 < ladderRight) {
                     isOnLadder = true;
-
                     // Stop Mario from sliding up when not moving**
                     if (!input.isDown(Keys.UP) && !input.isDown(Keys.DOWN)) {
                         velocityY = 0;  // Prevent sliding inertia effect
                     }
-
                     // ----------- Climb UP -----------
                     if (input.isDown(Keys.UP)) {
                         y -= CLIMB_SPEED;
                         velocityY = 0;
                     }
-
                     // ----------- Climb DOWN -----------
                     if (input.isDown(Keys.DOWN)) {
                         double nextY = y + CLIMB_SPEED;
                         double nextBottom = nextY + (marioImage.getHeight() / 2);
-
                         if (marioBottom > ladderTop && nextBottom <= ladderBottom) {
                             y = nextY;
                             velocityY = 0;
@@ -257,10 +240,10 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
 
     /** Handles horizontal movement based on player input. */
     private void handleHorizontalMovement(Input input) {
-        if (input.isDown(Keys.LEFT)) {
+        if (input.isDown(Keys.LEFT)) { // move left
             x -= HorizontallyMovable.MARIO_MOVE_SPEED;
             isFacingRight = false;
-        } else if (input.isDown(Keys.RIGHT)) {
+        } else if (input.isDown(Keys.RIGHT)) { // move right
             x += HorizontallyMovable.MARIO_MOVE_SPEED;
             isFacingRight = true;
         }
@@ -268,26 +251,27 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
 
     /** Handles collecting the hammer if Mario is in contact with it. */
     private void handleHammerCollection(Hammer hammer) {
+       // collect valid hammer when collide
         if (!hammer.isCollected() && isCollide(hammer)) {
             setHasHammer(true);
-            setHasBlaster(false);
-            bulletCount = 0;
+            setHasBlaster(false); // remove blaster if held it
+            bulletCount = 0; // empty bullet count
             hammer.collect();
         }
     }
 
     /** Handles collecting the hammer if Mario is in contact with it. */
     private void handleBlasterCollection(Blaster blaster) {
-
+        // collect valid blaster when collide
         if (!blaster.isCollected() && isCollide(blaster)) {
             if (!hasBlaster){
-                bulletCount = 5;
+                bulletCount = FULLBLASTERBLT;
             }
-            else{
-                bulletCount += 5;
+            else{ // add up bullet counts if already held one blaster
+                bulletCount += FULLBLASTERBLT;
             }
             setHasBlaster(true);
-            setHasHammer(false);
+            setHasHammer(false); // remove hammer
             blaster.collect();
         }
     }
@@ -307,7 +291,7 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
             isJumping = true;
         }
         double bottomOfMario = y + (marioImage.getHeight() / 2);
-        if (bottomOfMario > ShadowDonkeyKong.getScreenHeight()) {
+        if (bottomOfMario > ShadowDonkeyKong.getScreenHeight()) { // can't jump out of the screen
             y = ShadowDonkeyKong.getScreenHeight() - (marioImage.getHeight() / 2);
             velocityY = 0;
             isJumping = false;
@@ -321,62 +305,51 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
     public void enforceBoundaries() {
         // Calculate half the width of the Mario image (used for centering and boundary checks)
         double halfW = marioImage.getWidth() / 2;
-
         // Prevent Mario from moving beyond the left edge of the screen
         if (x < halfW) {
             x = halfW;
         }
-
         // Prevent Mario from moving beyond the right edge of the screen
         double maxX = ShadowDonkeyKong.getScreenWidth() - halfW;
         if (x > maxX) {
             x = maxX;
         }
-
         // Calculate Mario's bottom edge position
         double bottomOfMario = y + (marioImage.getHeight() / 2);
-
         // Prevent Mario from falling below the bottom of the screen
         if (bottomOfMario > ShadowDonkeyKong.getScreenHeight()) {
             // Reposition Mario to stand on the bottom edge
             y = ShadowDonkeyKong.getScreenHeight() - (marioImage.getHeight() / 2);
-
             // Stop vertical movement and reset jumping state
             velocityY = 0;
             isJumping = false;
         }
     }
 
-
     /**
      * Switch Mario's sprite (left/right, or hammer/no-hammer).
      * Adjust Mario's 'y' so that the bottom edge stays consistent.
      */
     private void updateSprite() {
-        // 1) Remember the old image and its bottom
+        //  Remember the old image and its bottom
         Image oldImage = marioImage;
         double oldHeight = oldImage.getHeight();
         double oldBottom = y + (oldHeight / 2);
-
-        // 2) Assign the new image based on facing & hammer & blater
-        //    (Whatever logic you currently use in update())
-        if (hasHammer) {
+        // Assign the new image based on facing & hammer & blater
+        if (hasHammer) { // hold hammer
             marioImage = isFacingRight ? MARIO_HAMMER_RIGHT_IMAGE : MARIO_HAMMER_LEFT_IMAGE;
-        } else if (hasBlaster) {
+        } else if (hasBlaster) { // hold blaster
             marioImage = isFacingRight ? MARIO_BLASTER_RIGHT_IMAGE : MARIO_BLASTER_LEFT_IMAGE;
-        } else {
+        } else { // hold nothing
             marioImage = isFacingRight ? MARIO_RIGHT_IMAGE : MARIO_LEFT_IMAGE;
         }
-
-        // 3) Now recalc Mario’s bottom with the new image
+        // recalc Mario’s bottom with the new image
         double newHeight = marioImage.getHeight();
         double newBottom = y + (newHeight / 2);
-
-        // 4) Shift 'y' so the bottom edge is the same as before
+        //  Shift 'y' so the bottom edge is the same as before
         //    (If new sprite is taller, we move Mario up so he doesn't sink into platforms)
         y -= (newBottom - oldBottom);
-
-        // 5) Update the recorded width/height to match the new image
+        // Update the recorded width/height to match the new image
         width  = marioImage.getWidth();
         height = newHeight;
     }
