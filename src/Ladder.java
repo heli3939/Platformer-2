@@ -28,6 +28,10 @@ public class Ladder extends GameEntity implements PhysicsAffected{
         draw();
     }
 
+    /**
+     * Apply gravity on the ladder and let it land on platform by detecting collision
+     * @param platforms An array of platforms for collision detection.
+     */
     @Override
     public void applyGravity(Platform[] platforms) {
         // Apply gravity

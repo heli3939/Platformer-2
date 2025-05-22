@@ -1,5 +1,10 @@
 import bagel.Image;
 
+/**
+ * Represents a Bullet projectile shot by Mario holding blaster
+ * A bullet travels horizontally in the same direction as Mario facing when being shot
+ * then deactive after travel for a max distance
+ */
 public class Bullet extends Projectile{
     // image path of bullet in right and left
     private final static String BULLETR_IMG = "res/bullet_right.png";
@@ -13,10 +18,19 @@ public class Bullet extends Projectile{
 
     private double distTravel = 0;
 
+    /**
+     * Constructs a Bullet projectile at the specified starting position.
+     * @param x Initial x-coordinate.
+     * @param y Initial y-coordinate.
+     */
     public Bullet(double x, double y) {
         super(BULLETR_IMG, x, y);
     }
 
+    /**
+     * Update bullet's position (motion) and image (depend on direction) after being shot by an IntelliMonkey
+     * @param mario Mario shot the bullet with blaster
+     */
     public void update(Mario mario){
         // set direction of bullet same as the facing direction of monkey shot it
         if (x == mario.x && y == mario.y){

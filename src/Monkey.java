@@ -1,6 +1,11 @@
 import bagel.Image;
 import bagel.util.Rectangle;
 
+/**
+ * represent enemy monkey in the game
+ * monkeys can walk across platforms, turn around at edges/reaching distance o=in walking pattern
+ * and respond to gravity when loaded, have normal and intelligent types.
+ */
 public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyMovable{
     // implements HorizontallyMovable, PhysicsAffected
 
@@ -32,6 +37,14 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
     private int i = 0; // count index of curent walk in the walking pattern
     private boolean isAlive = true; // revords if the monkey is alive
 
+    /**
+     * Constructs a monkey with the given position, direction, and walking pattern
+     * @param x Initial x-coordinate.
+     * @param y Initial y-coordinate.
+     * @param isMonkeyFacingRight Initial facing direction
+     * @param lenWalkPattern The number of steps in the walking pattern
+     * @param walkPattern An int array defining the walking pattern (in px)
+     */
     public Monkey(double x, double y, boolean isMonkeyFacingRight, int lenWalkPattern, int[] walkPattern) {
         super(NMONKEYL_IMG, x, y);
         this.isFacingRight = isMonkeyFacingRight;
@@ -40,11 +53,18 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
         this.monkeyImage = NMONKEY_LEFT_IMAGE;
     }
 
+    /**
+     * draw monkey with correct current image at the coordinate point
+     */
     @Override
     public void draw(){
         monkeyImage.draw(x, y);
     }
 
+    /**
+     * Updates monkey's movement, image change and fall on platform when is alive
+     * @param platforms an array of platforms for collision detection
+     */
     public void update(Platform[] platforms){
         // only update if alive
         if (isAlive){
@@ -58,6 +78,10 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
         }
     }
 
+    /**
+     * get correct image of monkey based on its type and facing direction
+     * @return correct image of monkey based on its type and facing direction
+     */
     public Image getMonkeyImage() {
         // different image for different type of monkeys and directions
         if (this instanceof IntelliMonkey){ // image for intell monkey
@@ -119,10 +143,18 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
         height = newHeight;
     }
 
+    /**
+     * get if monkey faces right
+     * @return true: right; false: left
+     */
     public boolean isFacingRight() {
         return isFacingRight;
     }
 
+    /**
+     * Apply gravity on monkey and let it land on platform by detecting collision
+     * @param platforms An array of platforms for collision detection.
+     */
     @Override
     public void applyGravity(Platform[] platforms) {
         // Apply gravity
@@ -142,14 +174,25 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
         }
     }
 
+    /**
+     * check if monkey still alive
+     * @return true: alive; false: killed
+     */
     public boolean isAlive() {
         return isAlive;
     }
 
+    /**
+     * set monkey as not alive when be killed
+     */
     public void kill() {
         isAlive = false;
     }
 
+    /**
+     * Enforces screen boundaries to prevent monkey from moving out of bounds.
+     * Ensures monkey stays within the left, right limit of the game window.
+     */
     @Override
     public void enforceBoundaries() {
         // Calculate half the width of the monkey image (used for centering and boundary checks)

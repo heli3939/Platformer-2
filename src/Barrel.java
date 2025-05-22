@@ -41,12 +41,10 @@ public class Barrel extends GameEntity implements PhysicsAffected{
                     break;
                 }
             }
-
             // 3) Draw the barrel
             draw();
         }
     }
-
 
     /**
      * Marks the barrel as destroyed, preventing it from being drawn or updated.
@@ -64,6 +62,10 @@ public class Barrel extends GameEntity implements PhysicsAffected{
         return isDestroyed;
     }
 
+    /**
+     * Apply gravity on the barrel and let it land on platform by detecting collision
+     * @param platforms An array of platforms for collision detection.
+     */
     @Override
     public void applyGravity(Platform[] platforms) {
         // Apply gravity

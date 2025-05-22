@@ -42,6 +42,10 @@ public class Donkey extends GameEntity implements PhysicsAffected{
         return donkeyBounds.intersects(platform.getBoundingBox());
     }
 
+    /**
+     * Apply gravity on Donkey and let it land on platform by detecting collision
+     * @param platforms An array of platforms for collision detection.
+     */
     @Override
     public void applyGravity(Platform[] platforms) {
         // Apply gravity

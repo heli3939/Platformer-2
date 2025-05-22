@@ -53,10 +53,10 @@ public class HomeScreen {
 
     /**
      * Displays the home screen with the title and background.
-     * Waits for the player to press ENTER to proceed.
+     * Waits for the player to press ENTER to proceed and go to corresponding screen
      *
      * @param input The current mouse/keyboard input.
-     * @return {@code true} if ENTER key is pressed (to start the game), {@code false} otherwise.
+     * @return int value to indicate current level, 1: level 1; 2: level 2; 0: still on homescreen
      */
     public int update(Input input) {
         // 1) Draw the background image at the top-left corner

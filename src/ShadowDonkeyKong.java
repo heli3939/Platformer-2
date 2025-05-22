@@ -18,8 +18,9 @@ public class ShadowDonkeyKong extends AbstractGame {
     private GamePlayScreen gamePlayScreen;
     private GameEndScreen gameEndScreen;
 
+    /** screen width of current game */
     public static double screenWidth;
-
+    /** screen height of current game */
     public static double screenHeight;
 
     private final int LEVEL1 = 1;

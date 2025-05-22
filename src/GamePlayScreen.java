@@ -6,19 +6,23 @@ import java.util.Properties;
 
 /**
  * Represents the main gameplay screen where the player controls Mario.
- * This class manages game objects, updates their states, and handles game logic.
+ * This abstract class manages game objects, updates their states, and handles game logic.
+ * Being extended by Level1 (basic) and Level2 (with extra implementation on additional game logic)
  */
 public abstract class GamePlayScreen {
     private final Properties GAME_PROPS;
 
     // Game objectss for both levels and blasters for level2
+    /** Mario, player control character */
     public Mario mario;
     private Barrel[] barrels;   // Array of barrels in the game
     private Ladder[] ladders;   // Array of ladders in the game
-    private Hammer[] hammers;      // Array of hammers object that Mario can collect
-    public Donkey donkey;      // Donkey Kong, the objective of the game
+    private Hammer[] hammers;// Array of hammers object that Mario can collect
+    /** Donkey Kong, the objective of the game */
+    public Donkey donkey;
     private Image background;   // Background image for the game
-    public Platform[] platforms; // Array of platforms in the game
+    /** Array of platforms in the game */
+    public Platform[] platforms;
     private Blaster[] blasters = new Blaster[0]; // Array of blasters object that Mario can collect
 
     // Frame tracking
@@ -44,9 +48,11 @@ public abstract class GamePlayScreen {
     // Score gain for game action
     private static final int BARREL_SCORE = 100; // score gain for destroy a barrel
     private static final int BARREL_CROSS_SCORE = 30; // score gain for jump across a barrel
-    
-    public int startedScore;  // Player's startedScore for jumping over barrels
-    public boolean isGameOver = false; // Game over flag
+
+    /** Player's startedScore at the start of level */
+    public int startedScore;
+    /** Game over flag */
+    public boolean isGameOver = false;
     private int currLevel; // indicate current game level
 
     private final int LEVEL2 = 2; // at level 2 of game
@@ -69,10 +75,12 @@ public abstract class GamePlayScreen {
         return (MAX_FRAMES - currFrame) / 60;
     }
 
+
     /**
      * Constructs the gameplay screen, loading resources and initializing game objects.
-     *
-     * @param gameProps  Properties file containing game settings.
+     * @param gameProps property file with game setting
+     * @param currLevel current level number
+     * @param startedScore initial score of game
      */
     public GamePlayScreen(Properties gameProps, int currLevel, int startedScore) {
         this.GAME_PROPS = gameProps;
@@ -100,7 +108,6 @@ public abstract class GamePlayScreen {
     public interface EntityFactory<T extends GameEntity> {
         T create(String[] entityStr);
     }
-
     <T extends GameEntity> ArrayList<T> loadEntities(
             Properties props, String prefix,
             int currLevel, EntityFactory<T> factory
@@ -194,10 +201,18 @@ public abstract class GamePlayScreen {
         }).toArray(new Hammer[0]);
     }
 
+    /**
+     * get current donkey health value
+     * @return current donkey health value
+     */
     public int getDonkeyHP() {
         return donkeyHP;
     }
 
+    /**
+     * set current donkey health value
+     * @param donkeyHP current donkey health value
+     */
     public void setDonkeyHP(int donkeyHP) {
         this.donkeyHP = donkeyHP;
     }
@@ -315,6 +330,17 @@ public abstract class GamePlayScreen {
         return currFrame >= MAX_FRAMES;
     }
 
+    /**
+     * abstract method to update extra game elements for level 2
+     * @param input input from keyboard
+     */
     public abstract void updateExtra(Input input);
+
+    /**
+     * abstract method to display bullet info for level 2
+     * @param STATUS_FONT font for display text
+     * @param DKH_X  x-coordinate to display the bullet info
+     * @param DKH_Y  y-coordinate to display the bullet info
+     */
     public abstract void displayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y);
 }

@@ -3,7 +3,8 @@ import bagel.util.Rectangle;
 
 /**
  * Represents the player-controlled character, Mario.
- * Mario can move, jump, climb ladders, pick up a hammer, and interact with platforms.
+ * Mario can move, jump, climb ladders, pick up a hammer/blaster, shoot
+ * and interact with platforms, monkey, donkey, barrel.
  */
 public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAffected {
     private double velocityY = 0; // Vertical velocity
@@ -43,8 +44,7 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
     private boolean isFacingRight = true; // Mario's facing direction
 
     /**
-     * Constructs a Mario character at the specified starting position.
-     *
+     * Constructs a Mario character at the specified starting position with its image.
      * @param x Initial x-coordinate.
      * @param y Initial y-coordinate.
      */
@@ -71,7 +71,6 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
         return this.hasHammer;
     }
 
-
     /**
      * Sets whether Mario has picked up the blaster.
      *
@@ -90,7 +89,6 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
         return this.hasBlaster;
     }
 
-
     /**
      * Updates Mario's movement, jumping, ladder climbing, hammer collection, and interactions.
      * This method is called every frame to process player input and update Mario's state.
@@ -98,7 +96,8 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
      * @param input     The player's input (keyboard/mouse).
      * @param ladders   The array of ladders in the game that Mario can climb.
      * @param platforms The array of platforms in the game that Mario can walk on.
-     * @param hammers    The array of hammer objects that Mario can collect and use.
+     * @param hammers    The array of hammer objects that Mario can collect and use as weapon.
+     * @param blasters The array of blaster objects that Mario can collect and use as weapon.
      */
     public void update(Input input, Ladder[] ladders, Platform[] platforms, Hammer[] hammers, Blaster[] blasters) {
         handleHorizontalMovement(input); // Horizontal movement
@@ -133,11 +132,18 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
         draw();
     }
 
+    /**
+     * draw current image of mario
+     */
     @Override
     public void draw(){
         marioImage.draw(x, y);
     }
 
+    /**
+     * get if mario faces right
+     * @return true: right; false: left
+     */
     public boolean isFacingRight() {
         return isFacingRight;
     }
@@ -276,10 +282,18 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
         }
     }
 
+    /**
+     * get current number of bullets
+     * @return current number of bullets
+     */
     public int getBulletCount() {
         return bulletCount;
     }
 
+    /**
+     * set mario's number of bullets
+     * @param bulletCount  number of bullets we want to set
+     */
     public void setBulletCount(int bulletCount) {
         this.bulletCount = bulletCount;
     }
@@ -368,6 +382,10 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
                 - (JUMP_STRENGTH * JUMP_STRENGTH) / (2 * MARIO_GRAVITY) - height / 2));
     }
 
+    /**
+     * Apply gravity on mario and let it land on platform by detecting collision
+     * @param platforms An array of platforms for collision detection.
+     */
     @Override
     public void applyGravity(Platform[] platforms) {
         velocityY += MARIO_GRAVITY;

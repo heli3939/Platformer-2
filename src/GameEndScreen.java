@@ -2,7 +2,7 @@ import bagel.*;
 import java.util.Properties;
 
 /**
- * Represents the screen displayed at the end of the game.
+ * Represents the screen displayed at the end of the gameplay (except winning level1).
  * It shows whether the player won or lost, displays the final score,
  * and waits for the player to press SPACE to continue.
  */
@@ -70,7 +70,7 @@ public class GameEndScreen {
     /**
      * Sets the final score to be displayed on the end screen.
      * The final score is calculated based on remaining time and points gained.
-     *
+     * recieve 0 final score if mario dead in the game play
      * @param timeRemaining The remaining time in the game.
      * @param gainedScore   The total points earned during the game.
      */
@@ -84,42 +84,36 @@ public class GameEndScreen {
     }
 
     /**
-     * Renders the game end screen, including the final score, win/loss message,
+     * Renders the game end screen, including the final score, win/loss message after every game play (except win L1),
      * and a prompt for the player to continue. Also checks for user input to exit the screen.
-     *
      * @param input The current user input.
      * @return {@code true} if the player presses SPACE to continue, {@code false} otherwise.
      */
     public boolean update(Input input) {
-        // 1) Draw the background image
+        // Draw the background image
         BACKGROUND_IMAGE.drawFromTopLeft(0, 0);
-
-        // 2) Display game outcome message ("Game Won" or "Game Lost")
+        // Display game outcome message ("Game Won" or "Game Lost")
         String statusText = isWon ? GAME_WON_TXT : GAME_LOST_TXT;
         STATUS_FONT.drawString(
                 statusText,
                 Window.getWidth() / 2 - STATUS_FONT.getWidth(statusText) / 2,
                 STATUS_Y
         );
-
-        // 3) Display the final score below the status message
+        // Display the final score below the status message
         String finalScoreText = SCORE_MESSAGE + " " + (int) finalScore;
         double finalScoreX = Window.getWidth() / 2 - SCORE_FONT.getWidth(finalScoreText) / 2;
         double finalScoreY = STATUS_Y + MESSAGE_DIFF_Y_1;
         SCORE_FONT.drawString(finalScoreText, finalScoreX, finalScoreY);
-
-        // 4) Display a prompt instructing the player to continue
+        // Display a prompt instructing the player to continue
         String promptText = CONTINUE_GAME_TXT;
         double promptX = Window.getWidth() / 2 - SCORE_FONT.getWidth(promptText) / 2;
         double promptY = Window.getHeight() - MESSAGE_DIFF_Y_2; // Positioned near the bottom
         SCORE_FONT.drawString(promptText, promptX, promptY);
-
-        // 5) Check if the player presses SPACE to exit the end screen
+        // Check if the player presses SPACE to exit the end screen
         if (input.wasPressed(Keys.SPACE)) {
             return true;
         }
-
-        // 6) Otherwise, remain on the game end screen
+        // Otherwise, remain on the game end screen
         return false;
     }
 }

@@ -1,15 +1,29 @@
 import bagel.Image;
 
+/**
+ * Represents a Banana projectile thrown by an IntelliMonkey
+ * A banana travels horizontally in the same direction as the monkey facing when being thrown
+ * then deactive after travel for a max distance
+ */
 public class Banana extends Projectile{
     private final static String BANANA_IMG = "res/banana.png";
     private final Image BANANA_IMAGE = new Image(BANANA_IMG);
     private double distTravel = 0;
     private final int MAXDISTBANANA = 300;
 
+    /**
+     * Constructs a Banana projectile at the specified starting position.
+     * @param x Initial x-coordinate.
+     * @param y Initial y-coordinate.
+     */
     public Banana(double x, double y) {
         super(BANANA_IMG, x, y);
     }
 
+    /**
+     * Update banana's position (motion) after being shot by an IntelliMonkey
+     * @param iMonkey the IntelliMonkey shot the banana
+     */
     public void update(IntelliMonkey iMonkey){
         // set direction of banana same as the facing direction of intell monkey throw it
         if (x == iMonkey.x && y == iMonkey.y){

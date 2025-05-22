@@ -5,6 +5,10 @@ import bagel.Keys;
 import java.util.ArrayList;
 import java.util.Properties;
 
+/**
+ * represent level2 of the game, extends generic GamePlayScreen
+ * include extra game elements and logics built above generic superclass
+ */
 public class Level2 extends GamePlayScreen {
     private final Properties GAME_PROPS;
 
@@ -29,6 +33,12 @@ public class Level2 extends GamePlayScreen {
 
     private final static int BANANACD = 300; // banana can be shot with interval of 300 framse (5 sec)
 
+    /**
+     * Constructs the gameplay screen for level2, loading resources and initializing game objects.
+     * @param gameProps property file with game setting
+     * @param currLevel current level number
+     * @param startedScore initial score of game
+     */
     public Level2(Properties gameProps, int currLevel, int startedScore) {
         super(gameProps, currLevel, startedScore);
         this.GAME_PROPS = gameProps;
@@ -103,6 +113,10 @@ public class Level2 extends GamePlayScreen {
         }
     }
 
+    /**
+     * update extra game elements and logics in level2
+     * @param input input from keyboard
+     */
     @Override
     public void updateExtra(Input input) {
         // load uncollected blasters
@@ -136,6 +150,12 @@ public class Level2 extends GamePlayScreen {
         }
     }
 
+    /**
+     * display bullet info for level 2
+     * @param STATUS_FONT font for display text
+     * @param DKH_X  x-coordinate to display the bullet info
+     * @param DKH_Y  y-coordinate to display the bullet info
+     */
     @Override
     public void displayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y) {
         // display bullet info
@@ -181,6 +201,10 @@ public class Level2 extends GamePlayScreen {
         }
     }
 
+    /**
+     * get an array of blasters in level2
+     * @return an array of blasters
+     */
     public Blaster[] getBlasters() {
         return blasters;
     }
