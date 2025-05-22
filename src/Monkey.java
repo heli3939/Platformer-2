@@ -129,6 +129,14 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
         height = newHeight;
     }
 
+    public boolean isFacingRight() {
+        return isFacingRight;
+    }
+
+    public void setFacingRight(boolean facingRight) {
+        isFacingRight = facingRight;
+    }
+
     @Override
     public void applyGravity(Platform[] platforms) {
         // Apply gravity

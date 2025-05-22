@@ -18,9 +18,12 @@ public class Level2 extends GamePlayScreen {
     // New game objects for Level2
     private int bulletCount = 0;
     protected  Blaster[] blasters;   // Array of blaster in level2
-    private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+    private ArrayList<Bullet> bullets = new ArrayList<>();
+    private ArrayList<Banana> bananas = new ArrayList<>();
+    protected Monkey[] monkeys;
     private final ArrayList<Monkey> allMonkeys = new ArrayList<>();
 
+    private final static int BANANACD = 300;
 
     public Level2(Properties gameProps, int currLevel, int startedScore) {
         super(gameProps, currLevel, startedScore);
@@ -38,6 +41,7 @@ public class Level2 extends GamePlayScreen {
             }
         }
         shootBullet(input);
+        shootBanana();
 
         // Update all bullets every frame
         ArrayList<Bullet> bulletsToRemove = new ArrayList<>();
@@ -61,6 +65,23 @@ public class Level2 extends GamePlayScreen {
                 }
             }
         }
+
+        ArrayList<Banana> bananasToRemove = new ArrayList<>();
+        for (Banana banana : bananas) {
+            for (Monkey monkey : allMonkeys){
+                if (monkey instanceof IntelliMonkey){
+                    banana.update((IntelliMonkey) monkey);
+                    if (!banana.isActive()) {
+                        bananasToRemove.add(banana);
+                    }
+                    if (banana.isCollide(mario)){
+                        banana.setActive(false);
+                        isGameOver = true;
+                    }
+                }
+            }
+        }
+
         for (Monkey monkey: allMonkeys) {
             if (mario.isCollide(monkey)) {
                 if (mario.holdHammer()){
@@ -73,8 +94,8 @@ public class Level2 extends GamePlayScreen {
             }
         }
         bullets.removeAll(bulletsToRemove);
+        bananas.removeAll(bananasToRemove);
         donkeyBeShot();
-        int i = 0;
         for (Monkey monkey: allMonkeys){
             monkey.draw();
             monkey.update(platforms);
@@ -98,6 +119,23 @@ public class Level2 extends GamePlayScreen {
                 DKH_X, DKH_Y + BULLET_DISPLAY_DIFF_Y);
     }
 
+    private void shootBanana(){
+        for (Monkey monkey: allMonkeys){
+            if ((monkey instanceof IntelliMonkey) && monkey.isAlive()){
+                int timeCount = ((IntelliMonkey) monkey).getTimeCount();
+                if (timeCount == BANANACD || timeCount == 0){
+                    bananas.add(new Banana(monkey.x, monkey.y));
+                    timeCount = 0;
+                    ((IntelliMonkey) monkey).setTimeCount(timeCount);
+                }
+                timeCount++;
+                ((IntelliMonkey) monkey).setTimeCount(timeCount);
+                for (Banana banana: bananas){
+                    banana.update((IntelliMonkey) monkey);
+                }
+            }
+        }
+    }
 
     private void shootBullet(Input input){
         bulletCount =  mario.getBulletCount();
@@ -124,6 +162,7 @@ public class Level2 extends GamePlayScreen {
     private void loadMonkeys(boolean isIntell){
         String baseKey = (isIntell ? "intelligent": "normal") + "Monkey.level2.";
         int count = Integer.parseInt(GAME_PROPS.getProperty(baseKey + "count"));
+        monkeys = new Monkey[count];
         for (int i = 1; i <= count; i++){
             String[] info = GAME_PROPS.getProperty(baseKey + i).split(";");
             String[] coords = info[0].split(",");
@@ -150,8 +189,10 @@ public class Level2 extends GamePlayScreen {
                 return new Blaster(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
             }
         }).toArray(new Blaster[0]);
+
         loadMonkeys(true);
         loadMonkeys(false);
+
     }
 
 }

@@ -22,7 +22,6 @@ public abstract class Weapon extends GameEntity{
         super(imagePath, x, y);
     }
 
-
     /**
      * Draws the hammer on the screen if it has not been collected.
      */

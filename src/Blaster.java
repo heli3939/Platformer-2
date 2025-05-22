@@ -11,6 +11,7 @@ public class Blaster extends Weapon {
         return bulletCount;
     }
 
+
     @Override
     public void update() {
         // static too

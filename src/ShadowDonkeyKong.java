@@ -47,7 +47,6 @@ public class ShadowDonkeyKong extends AbstractGame {
         homeScreen = new HomeScreen(GAME_PROPS, MESSAGE_PROPS);
     }
 
-
     /**
      * Render the relevant screen based on the keyboard input given by the user and the status of the gameplay.
      * @param input The current mouse/keyboard input.

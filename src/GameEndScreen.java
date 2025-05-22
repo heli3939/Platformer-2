@@ -79,10 +79,9 @@ public class GameEndScreen {
     public void setFinalScore(double timeRemaining, double gainedScore) {
           // Weight assigned to time-based scoring
         // Weight assigned to points-based scoring
-        if (isWon){
+        if (isWon || timeRemaining == 0){
             this.finalScore = (TIME_WEIGHT * timeRemaining) + (POINTS_WEIGHT * gainedScore);
-        }
-        else{
+        } else {
             this.finalScore = 0;
         }
     }
