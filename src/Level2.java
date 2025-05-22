@@ -20,10 +20,10 @@ public class Level2 extends GamePlayScreen {
     private int donkeyHP = 5;
     // New game objects for Level2
     private int bulletCount = 0;
-    protected  Blaster[] blasters;   // Array of blaster in level2
+    private Blaster[] blasters;   // Array of blaster in level2
     private ArrayList<Bullet> bullets = new ArrayList<>();
     private ArrayList<Banana> bananas = new ArrayList<>();
-    protected Monkey[] monkeys;
+    private Monkey[] monkeys;
     private final ArrayList<Monkey> allMonkeys = new ArrayList<>();
 
     private final static int BANANACD = 300;
@@ -95,7 +95,7 @@ public class Level2 extends GamePlayScreen {
     }
 
     @Override
-    protected void updateExtra(Input input) {
+    public void updateExtra(Input input) {
         for (Blaster blaster : blasters) {
             if (!blaster.isCollected()){
                 blaster.draw();
@@ -125,7 +125,7 @@ public class Level2 extends GamePlayScreen {
     }
 
     @Override
-    protected void disPlayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y) {
+    public void disPlayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y) {
         STATUS_FONT.drawString(BLT_MESSAGE + mario.getBulletCount(),
                 DKH_X, DKH_Y + BULLET_DISPLAY_DIFF_Y);
     }
@@ -165,7 +165,7 @@ public class Level2 extends GamePlayScreen {
         }
     }
 
-    protected Blaster[] getBlasters() {
+    public Blaster[] getBlasters() {
         return blasters;
     }
 

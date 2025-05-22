@@ -9,12 +9,12 @@ public class Level1 extends GamePlayScreen{
     }
 
     @Override
-    protected void updateExtra(Input input) {
+    public void updateExtra(Input input) {
 
     }
 
     @Override
-    protected void disPlayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y) {
+    public void disPlayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y) {
 
     }
 }

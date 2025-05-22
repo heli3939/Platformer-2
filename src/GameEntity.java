@@ -2,11 +2,11 @@ import bagel.*;
 import bagel.util.Rectangle;
 
 public class GameEntity {
-    protected double x;
-    protected double y;
-    protected Image currentImage;
-    protected double height;
-    protected double width;
+    public double x;
+    public double y;
+    public Image currentImage;
+    public double height;
+    public double width;
 
     public GameEntity(String imagePath, double x, double y) {
         this.currentImage = new Image(imagePath);

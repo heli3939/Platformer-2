@@ -7,7 +7,7 @@ public abstract class Projectile extends GameEntity implements HorizontallyMovab
         super(imagePath, x, y);
     }
 
-    protected void distCheck(double distTravel, int maxDist){
+    public void distCheck(double distTravel, int maxDist){
         if (distTravel> maxDist) {
             setActive(false);
         }

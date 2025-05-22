@@ -12,14 +12,14 @@ public abstract class GamePlayScreen {
     private final Properties GAME_PROPS;
 
     // Game objectss
-    protected Mario mario;
+    public Mario mario;
     private Barrel[] barrels;   // Array of barrels in the game
     private Ladder[] ladders;   // Array of ladders in the game
     private Hammer[] hammers;      // The hammer object that Mario can collect
     private Blaster[] blasters = new Blaster[0];
-    protected Donkey donkey;      // Donkey Kong, the objective of the game
+    public Donkey donkey;      // Donkey Kong, the objective of the game
     private Image background;   // Background image for the game
-    protected Platform[] platforms; // Array of platforms in the game
+    public Platform[] platforms; // Array of platforms in the game
 
     // Frame tracking
     private int currFrame = 0;  // Tracks the number of frames elapsed
@@ -43,8 +43,8 @@ public abstract class GamePlayScreen {
     private static final int BARREL_SCORE = 100;
     private static final int TIME_DISPLAY_DIFF_Y = 30;
     private static final int BARREL_CROSS_SCORE = 30;
-    protected int startedScore;  // Player's startedScore for jumping over barrels
-    protected boolean isGameOver = false; // Game over flag
+    public int startedScore;  // Player's startedScore for jumping over barrels
+    public boolean isGameOver = false; // Game over flag
 
     private int currLevel;
 
@@ -311,6 +311,6 @@ public abstract class GamePlayScreen {
         return currFrame >= MAX_FRAMES;
     }
 
-    protected abstract void updateExtra(Input input);
-    protected abstract void disPlayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y);
+    public abstract void updateExtra(Input input);
+    public abstract void disPlayBullet(Font STATUS_FONT, int DKH_X, int DKH_Y);
 }
