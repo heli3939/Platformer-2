@@ -104,7 +104,12 @@ public abstract class GamePlayScreen {
         initializeGameObjects();
     }
 
-
+    /**
+     * use to read in properties of game entity with format
+     * (gameEntityName).level(cuurLevel).count = number of entity in that level
+     * (gameEntityName).level(cuurLevel).(i: 1...count)
+     * @param <T> game entity
+     */
     public interface EntityFactory<T extends GameEntity> {
         T create(String[] entityStr);
     }

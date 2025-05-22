@@ -92,6 +92,14 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
         }
     }
 
+    /**
+     * handling horizontal move of monkey, including turn around
+     * when reach edge of platform or reach the distance in current walk pattern
+     * @param platforms
+     * @param isFacingRight
+     * @param lenWalkPattern
+     * @param walkPattern
+     */
     private void LRMove(Platform[] platforms, boolean isFacingRight, int lenWalkPattern, int[] walkPattern){
         if (isFacingRight){ // walk right when face right
             x += MONKEY_MOVE_SPEED;

@@ -47,6 +47,9 @@ public class Level2 extends GamePlayScreen {
         initializeGameObjects2();
     }
 
+    /**
+     * handle decrease health for donkey and kill monkey when hit by bullet
+     */
     private void bulletHit(){
         // Update all bullets every frame
         ArrayList<Bullet> bulletsToRemove = new ArrayList<>();
@@ -77,6 +80,9 @@ public class Level2 extends GamePlayScreen {
         bullets.removeAll(bulletsToRemove);
     }
 
+    /**
+     * handle mario being killed after hit by a banana
+     */
     private void bananaHit(){
         ArrayList<Banana> bananasToRemove = new ArrayList<>();
         for (Banana banana : bananas) {
@@ -98,6 +104,9 @@ public class Level2 extends GamePlayScreen {
         bananas.removeAll(bananasToRemove);
     }
 
+    /**
+     * handle mario can kill monkey with hammer
+     */
     private void marioVsMonkey(){
         for (Monkey monkey: allMonkeys) {
             if (mario.isCollide(monkey)) {
@@ -138,6 +147,9 @@ public class Level2 extends GamePlayScreen {
         }
     }
 
+    /**
+     * handle donkey being shoot by bullet
+     */
     private void donkeyBeShot(){
         for (Bullet bullet: bullets){
             // donkey -1 hp for being hit by bullet
@@ -163,6 +175,9 @@ public class Level2 extends GamePlayScreen {
                 DKH_X, DKH_Y + BULLET_DISPLAY_DIFF_Y);
     }
 
+    /**
+     * handle intell monkeys shot banana with time interval
+     */
     private void shootBanana(){
         for (Monkey monkey: allMonkeys){
             if ((monkey instanceof IntelliMonkey) && monkey.isAlive()){
@@ -181,6 +196,10 @@ public class Level2 extends GamePlayScreen {
         }
     }
 
+    /**
+     * handle shoot using blaster by mario when press 'S' and there're sufficient bullets
+     * @param input input from keyboard
+     */
     private void shootBullet(Input input){
         bulletCount =  mario.getBulletCount();
         // handle shot action by mario with blaster
@@ -236,6 +255,9 @@ public class Level2 extends GamePlayScreen {
         }
     }
 
+    /**
+     * initialize additional game entities in level2 (besides blasters)
+     */
     private void initializeGameObjects2() {
         // Load blasters
         this.blasters = loadEntities(GAME_PROPS, "blaster", currLevel, new EntityFactory<Blaster>() {

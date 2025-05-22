@@ -1,3 +1,8 @@
+/**
+ * an interface implemented to all entities affected by gravity
+ * that they should fall down on to the platform
+ * contain their gravity value and terminal velocity
+ */
 public interface PhysicsAffected {
     double MARIO_GRAVITY = 0.2;
     double DONKEY_GRAVITY = 0.4;
