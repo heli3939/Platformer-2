@@ -22,6 +22,9 @@ public class ShadowDonkeyKong extends AbstractGame {
 
     public static double screenHeight;
 
+    private final int LEVEL1 = 1;
+    private final int LEVEL2 = 2;
+
     private static int currLevel = -1;
     private int score = 0;
 
@@ -72,31 +75,25 @@ public class ShadowDonkeyKong extends AbstractGame {
             // The gameplay ended
             if (gamePlayScreen.update(input)) {
                 boolean isWon = gamePlayScreen.isLevelCompleted();
-
                 // 1) GET THE SCORE
                 int finalScore = gamePlayScreen.getStartedScore();
                 int timeRemaining = gamePlayScreen.getSecondsLeft();
-                if (currLevel == 1 && isWon){
-                    currLevel = 2;
+                if (currLevel == LEVEL1 && isWon){
+                    currLevel = LEVEL2;
                     score += finalScore;
                     gamePlayScreen = new Level2(GAME_PROPS, currLevel, score);
                 }
                 else{
                     // 2) CREATE THE END SCREEN
                     gameEndScreen = new GameEndScreen(GAME_PROPS, MESSAGE_PROPS);
-
                     // 3) PASS finalScore
                     gameEndScreen.setIsWon(isWon);
                     gameEndScreen.setFinalScore(timeRemaining, finalScore);
-
                     // 4) Nullify gameplay
                     gamePlayScreen = null;
                 }
-
             }
-
         }
-
         // Game Over / Victory Screen
         else if (gamePlayScreen == null ) {
             if (gameEndScreen.update(input)) {
@@ -106,7 +103,6 @@ public class ShadowDonkeyKong extends AbstractGame {
             }
         }
     }
-
 
     /**
      * Retrieves the width of the game screen.
@@ -126,7 +122,6 @@ public class ShadowDonkeyKong extends AbstractGame {
         return screenHeight;
     }
 
-
     /**
      * The main entry point of the Shadow Donkey Kong game.
      *
@@ -141,7 +136,5 @@ public class ShadowDonkeyKong extends AbstractGame {
         ShadowDonkeyKong game = new ShadowDonkeyKong(gameProps, messageProps);
         game.run();
     }
-
-
 }
 

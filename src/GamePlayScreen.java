@@ -93,8 +93,6 @@ public abstract class GamePlayScreen {
         initializeGameObjects();
     }
 
-
-
     public interface EntityFactory<T extends GameEntity> {
         T create(String[] entityStr);
     }
@@ -197,10 +195,6 @@ public abstract class GamePlayScreen {
         this.donkeyHP = donkeyHP;
     }
 
-    public int getCurrLevel() {
-        return currLevel;
-    }
-
     /**
      * Updates game state each frame.
      *
@@ -209,7 +203,6 @@ public abstract class GamePlayScreen {
      */
     public boolean update(Input input) {
         currFrame++;
-
         // Draw background
         background.drawFromTopLeft(0, 0);
 

@@ -1,5 +1,3 @@
-import bagel.*;
-import bagel.util.Colour;
 import bagel.util.Rectangle;
 
 /**
@@ -42,16 +40,6 @@ public class Donkey extends GameEntity implements PhysicsAffected{
     private boolean isTouchingPlatform(Platform platform) {
         Rectangle donkeyBounds = getBoundingBox();
         return donkeyBounds.intersects(platform.getBoundingBox());
-    }
-
-    @Override
-    public double getGravity(){
-        return MARIO_GRAVITY;
-    }
-
-    @Override
-    public double getTerminalVelocity() {
-        return MARIO_TERMINAL_VELOCITY;
     }
 
     @Override

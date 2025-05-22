@@ -10,7 +10,5 @@ public interface PhysicsAffected {
     double DONKEY_TERMINAL_VELOCITY = 5.0;
     double MONKEY_TERMINAL_VELOCITY = 5.0;
 
-    double getGravity();
-    double getTerminalVelocity();
     void applyGravity(Platform[] platforms);
 }

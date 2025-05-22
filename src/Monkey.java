@@ -1,6 +1,5 @@
-import bagel.Image;import bagel.Image;
+import bagel.Image;
 import bagel.util.Rectangle;
-
 
 public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyMovable{
     // implements HorizontallyMovable, PhysicsAffected
@@ -33,12 +32,12 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
     private boolean isAlive = true;
 
 
-    public Monkey(double x, double y, boolean isNMonkeyFacingRight, int lenWalkPattern, int[] walkPattern) {
+    public Monkey(double x, double y, boolean isMonkeyFacingRight, int lenWalkPattern, int[] walkPattern) {
         super(NMONKEYL_IMG, x, y);
-        this.isFacingRight = isNMonkeyFacingRight;
+        this.isFacingRight = isMonkeyFacingRight;
         this.lenWalkPattern = lenWalkPattern;
         this.walkPattern = walkPattern;
-        this.monkeyImage = isNMonkeyFacingRight ? NMONKEY_RIGHT_IMAGE : NMONKEY_LEFT_IMAGE;
+        this.monkeyImage = NMONKEY_LEFT_IMAGE;
     }
 
     @Override
@@ -92,16 +91,6 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
         }
     }
 
-    @Override
-    public double getGravity() {
-        return MONKEY_GRAVITY;
-    }
-
-    @Override
-    public double getTerminalVelocity() {
-        return MONKEY_TERMINAL_VELOCITY;
-    }
-
     /**
      * Switch Mario's sprite (left/right, or hammer/no-hammer).
      * Adjust Mario's 'y' so that the bottom edge stays consistent.
@@ -133,10 +122,6 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
         return isFacingRight;
     }
 
-    public void setFacingRight(boolean facingRight) {
-        isFacingRight = facingRight;
-    }
-
     @Override
     public void applyGravity(Platform[] platforms) {
         // Apply gravity
@@ -162,7 +147,6 @@ public class Monkey extends GameEntity implements PhysicsAffected, HorizontallyM
 
     public void kill() {
         isAlive = false;
-        System.out.println("Monkey Killed!");
     }
 
     @Override

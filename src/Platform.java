@@ -1,7 +1,3 @@
-import bagel.*;
-import bagel.util.Rectangle;
-import bagel.util.Colour;
-
 /**
  * Represents a stationary platform in the game.
  * Platforms provide surfaces for Mario to walk on and interact with.

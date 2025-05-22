@@ -86,10 +86,6 @@ public class GameEndScreen {
         }
     }
 
-    public double getFinalScore() {
-        return finalScore;
-    }
-
     /**
      * Renders the game end screen, including the final score, win/loss message,
      * and a prompt for the player to continue. Also checks for user input to exit the screen.

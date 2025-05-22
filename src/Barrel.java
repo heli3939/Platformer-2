@@ -1,7 +1,3 @@
-import bagel.*;
-import bagel.util.Colour;
-import bagel.util.Rectangle;
-
 /**
  * Represents a barrel in the game, affected by gravity and platform collisions.
  * The barrel can be destroyed, at which point it will no longer be drawn or interact with the environment.
@@ -67,16 +63,6 @@ public class Barrel extends GameEntity implements PhysicsAffected{
      */
     public boolean isDestroyed() {
         return isDestroyed;
-    }
-
-    @Override
-    public double getGravity(){
-        return BARREL_GRAVITY;
-    }
-
-    @Override
-    public double getTerminalVelocity() {
-        return BARREL_TERMINAL_VELOCITY;
     }
 
     @Override

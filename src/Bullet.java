@@ -4,11 +4,12 @@ public class Bullet extends Projectile{
     private final static String BULLETR_IMG = "res/bullet_right.png";
     private final static String BULLETL_IMG = "res/bullet_left.png";
 
-    private final int MAXDISTBULLET = 300;
-
-    private Image bulletImage;
     private final Image BULLET_RIGHT_IMAGE = new Image(BULLETR_IMG);
     private final Image BULLET_LEFT_IMAGE = new Image(BULLETL_IMG);
+
+    private final int MAXDISTBULLET = 300;
+    private Image bulletImage;
+
 
     private double distTravel = 0;
 

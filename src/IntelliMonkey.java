@@ -1,7 +1,4 @@
-import bagel.Image;
-
 public class IntelliMonkey extends Monkey{
-    private final static int BANANACD = 300;
     private boolean isMonkeyFacingRight;
     private int timeCount = 0;
 

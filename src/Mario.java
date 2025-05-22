@@ -33,7 +33,6 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
     private final Image MARIO_BLASTER_LEFT_IMAGE = new Image(MARIOLB_IMG);
     private final Image MARIO_BLASTER_RIGHT_IMAGE = new Image(MARIORB_IMG);
 
-
     // Movement physics constants
     private static final double JUMP_STRENGTH = -5;
     private static final double CLIMB_SPEED = 2;
@@ -50,6 +49,7 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
      */
     public Mario(double x, double y) {
         super(MARIOR_IMG, x, y);
+        marioImage = MARIO_RIGHT_IMAGE;
     }
 
     /**
@@ -102,7 +102,7 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
     public void update(Input input, Ladder[] ladders, Platform[] platforms, Hammer[] hammers, Blaster[] blasters) {
         handleHorizontalMovement(input); // 1) Horizontal movement
         for (Hammer hammer: hammers){
-            updateSprite(hammer); // 2) Update Mario’s current sprite (hammer or not, facing left or right)
+//            updateSprite(hammer); // 2) Update Mario’s current sprite (hammer or not, facing left or right)
             handleHammerCollection(hammer); // 3) If you just picked up the hammer:
         }
 
@@ -266,13 +266,6 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
         }
     }
 
-    /** Updates Mario's sprite based on his current state. */
-    private void updateSprite(Hammer hammer) {
-        marioImage = hasHammer
-                ? (isFacingRight ? MARIO_HAMMER_RIGHT_IMAGE : MARIO_HAMMER_LEFT_IMAGE)
-                : (isFacingRight ? MARIO_RIGHT_IMAGE : MARIO_LEFT_IMAGE);
-    }
-
     /** Handles collecting the hammer if Mario is in contact with it. */
     private void handleHammerCollection(Hammer hammer) {
         if (!hammer.isCollected() && isCollide(hammer)) {
@@ -280,7 +273,6 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
             setHasBlaster(false);
             bulletCount = 0;
             hammer.collect();
-            System.out.println("Hammer collected!");
         }
     }
 
@@ -297,7 +289,6 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
             setHasBlaster(true);
             setHasHammer(false);
             blaster.collect();
-            System.out.println("Blaster collected!" + bulletCount);
         }
     }
 
@@ -314,7 +305,6 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
         if (onPlatform && wantsToJump) {
             velocityY = JUMP_STRENGTH;
             isJumping = true;
-            System.out.println("Jumping!");
         }
         double bottomOfMario = y + (marioImage.getHeight() / 2);
         if (bottomOfMario > ShadowDonkeyKong.getScreenHeight()) {
@@ -403,16 +393,6 @@ public class Mario extends GameEntity implements HorizontallyMovable, PhysicsAff
                 && (this.y < barrel.getY())
                 && ((this.y + height / 2) >= (barrel.getY() + barrel.height / 2
                 - (JUMP_STRENGTH * JUMP_STRENGTH) / (2 * MARIO_GRAVITY) - height / 2));
-    }
-
-    @Override
-    public double getGravity() {
-        return MARIO_GRAVITY;
-    }
-
-    @Override
-    public double getTerminalVelocity() {
-        return MARIO_TERMINAL_VELOCITY;
     }
 
     @Override

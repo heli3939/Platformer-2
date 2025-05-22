@@ -1,5 +1,5 @@
 public abstract class Projectile extends GameEntity implements HorizontallyMovable{
-    private double OUT_OF_SCREEN = 9999;
+    private double OUTOFSCREEN = -10000;
     private boolean isRight;
     private boolean isActive = true;
 
@@ -16,7 +16,7 @@ public abstract class Projectile extends GameEntity implements HorizontallyMovab
     @Override
     public void draw(){
         if (!isActive){
-            x = OUT_OF_SCREEN;
+            x = OUTOFSCREEN;
         }
         currentImage.draw(x, y);
     }

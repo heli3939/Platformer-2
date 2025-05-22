@@ -1,7 +1,3 @@
-import bagel.*;
-import bagel.util.Colour;
-import bagel.util.Rectangle;
-
 /**
  * Represents a ladder in the game.
  * The ladder falls under gravity until it lands on a platform.
@@ -30,16 +26,6 @@ public class Ladder extends GameEntity implements PhysicsAffected{
         applyGravity(platforms);
         // 5) Draw the ladder after updating position
         draw();
-    }
-
-    @Override
-    public double getGravity() {
-        return LADDER_GRAVITY;
-    }
-
-    @Override
-    public double getTerminalVelocity() {
-        return LADDER_TERMINAL_VELOCITY;
     }
 
     @Override

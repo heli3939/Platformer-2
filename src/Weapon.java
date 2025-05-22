@@ -1,16 +1,10 @@
-import bagel.DrawOptions;
-import bagel.Drawing;
-import bagel.Image;
-import bagel.util.Colour;
-import bagel.util.Rectangle;
-
 /**
  * Represents a Weapon collectible in the game.
  * The hammer can be collected by the player, at which point it disappears from the screen.
  */
-public abstract class Weapon extends GameEntity{
+public  class Weapon extends GameEntity{
     private boolean isCollected = false;
-    private double OUT_OF_SCREEN = 9999;
+    private double OUTOFSCREEN = -10000;
 
     /**
      * Constructs a Weapon at the specified position.
@@ -28,7 +22,7 @@ public abstract class Weapon extends GameEntity{
     @Override
     public void draw() {
         if (isCollected) {
-            x = OUT_OF_SCREEN;
+            x = OUTOFSCREEN;
             // Bagel centers images automatically
         }
         currentImage.draw(x, y);
@@ -50,5 +44,4 @@ public abstract class Weapon extends GameEntity{
         return isCollected;
     }
 
-    public abstract void update();
 }
