@@ -1,0 +1,25 @@
+e542b10 - heli3939, 19 minutes ago : add doc string for private methods
+1bf91a6 - heli3939, 9 hours ago : update readmefile and java doc
+da356c7 - heli3939, 12 hours ago : complete commments
+fedacd7 - heli3939, 17 hours ago : update visibility, reduce usage of protected
+3cd9279 - heli3939, 18 hours ago : clean up structure, duplicated and reductant parts of code
+fe2a4db - heli3939, 20 hours ago : implement all rules indicated in spec
+4acb349 - heli3939, 2 days ago : draw intell monkeys, and generalize game mechanism for monkeys with clearer structure
+da50286 - heli3939, 2 days ago : debug initialize of direction of monkey, implement kill monkey by both hammer and bullet, and kill donkey by shot 5 times, killed by monkey if collide without holding a hammer
+dc3ad8b - heli3939, 3 days ago : apply switching sprite for turn around at the end of a single walking pattern and edge, but fail to initialize monkey in correct position
+7a17fb9 - heli3939, 3 days ago : draw normal monkey, and apply primary logic for monkey move and change direction
+1fdb619 - heli3939, 4 days ago : find the bug for can't loss the game when mario collide with donkey without hammer and fix
+6e2636f - heli3939, 5 days ago : implement shot donkey and kill it by blaster
+38ee5d8 - heli3939, 5 days ago : implement shot action by mario with blaster and bullet motion logic
+b032edb - heli3939, 6 days ago : display donke health and bullet count, implement bullet count logic, reduce use of static method
+2485ba2 - heli3939, 6 days ago : display blasters for level2, implement weapon as superclass of blaster and hameer as well as subclass of gameentity. implement blaster collection logic and switch between weapon (only for mario image)
+88ae356 - heli3939, 6 days ago : fix socring logic, level2 socre only include time bonus for its own level
+7496e2d - heli3939, 11 days ago : implement level1 win -> level2 and press 2 for level2, cumulated socre still has bug for level1 won and level2 loss
+b9934cc - heli3939, 12 days ago : implement PhysicsAffected and HorizontallyMovable interfaces onto game entitys
+1c3dbfb - heli3939, 2 weeks ago : implement GameEntity subclass, and all game entities available currently have been extended from this super class with seemily no bugs for level 1
+4e5d92a - heli3939, 2 weeks ago : modify source code based on new app.properties file, implement press 1 for level 1
+26dd729 - heli3939, 2 weeks ago : update src folder for project2
+6452345 - heli3939, 2 weeks ago : initial commit
+431f7a3 - heli3939, 2 weeks ago : testing new clone and push
+329a867 - xinyueluo, 2 weeks ago : Delete Copy_of_Project2A_Level1.drawio
+25e5838 - xinyueluo, 2 weeks ago : Upload New File
