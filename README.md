@@ -7,3 +7,6 @@ with following assumptions:
 3. banana shot disappered when the corresponding intelli monkey die
 4. terminal velocity for all class implements PhysicisAffected, with 5.0 temrinal velocity, except Mario with 10.0
 5. display donkey health info for both levels
+
+UML design prior to code implementation:
+[UML_platformer2.pdf](https://github.com/user-attachments/files/21484655/UML_platformer2.pdf)
